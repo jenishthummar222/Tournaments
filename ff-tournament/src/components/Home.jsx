@@ -31,7 +31,7 @@ const Home = () => {
   useEffect(() => {
 
 
-    fetch("http://127.0.0.1:8000/tournaments")
+    fetch(`${import.meta.env.VITE_API_URL}/tournaments`)
 
       .then((res) => res.json())
 
@@ -630,7 +630,7 @@ const Home = () => {
                         );
 
                         const response = await fetch(
-                          "http://127.0.0.1:8000/join-tournament",
+                          `${import.meta.env.VITE_API_URL}/join-tournament`,
                           {
                             method: "POST",
 

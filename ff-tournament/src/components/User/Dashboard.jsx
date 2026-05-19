@@ -90,7 +90,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://127.0.0.1:8000/wallet", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/wallet`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -132,7 +132,7 @@ const Dashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/update-name",
+        `${import.meta.env.VITE_API_URL}/update-name`,
 
         {
 
@@ -215,7 +215,7 @@ const Dashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/upload-profile",
+        `${import.meta.env.VITE_API_URL}/upload-profile`,
 
         {
           method: "POST",
@@ -303,7 +303,7 @@ const Dashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/add-cash",
+        `${import.meta.env.VITE_API_URL}/add-cash`,
 
         {
 
@@ -407,7 +407,7 @@ const Dashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/withdraw-request",
+        `${import.meta.env.VITE_API_URL}/withdraw-request`,
 
         {
 
@@ -480,7 +480,7 @@ const Dashboard = () => {
     try {
 
       const res = await fetch(
-        "http://127.0.0.1:8000/tournaments"
+        `${import.meta.env.VITE_API_URL}/tournaments`
       );
 
       const data = await res.json();
@@ -538,7 +538,7 @@ const Dashboard = () => {
     // FIRST LOAD
     fetchTournaments();
 
-    fetch(`http://127.0.0.1:8000/my-tournaments/${savedUser.email}`)
+    fetch(`${import.meta.env.VITE_API_URL}/my-tournaments/${savedUser.email}`)
 
     .then((res) => res.json())
 
@@ -554,7 +554,7 @@ const Dashboard = () => {
 
     }, 3000);
 
-    fetch(`http://127.0.0.1:8000/match-history/${savedUser.email}`)
+    fetch(`${import.meta.env.VITE_API_URL}/match-history/${savedUser.email}`)
       .then((res) => res.json())
       .then((data) => {
 
@@ -562,7 +562,7 @@ const Dashboard = () => {
 
       });
     
-    fetch(`http://127.0.0.1:8000/transactions/${savedUser.email}`)
+    fetch(`${import.meta.env.VITE_API_URL}/transactions/${savedUser.email}`)
       .then((res) => res.json())
       .then((data) => {
 
@@ -581,7 +581,7 @@ const Dashboard = () => {
 
       const res = await fetch(
 
-        `http://127.0.0.1:8000/tournament/${selectedTournament._id}`
+        `${import.meta.env.VITE_API_URL}/tournament/${selectedTournament._id}`
 
       );
 
@@ -618,7 +618,7 @@ const Dashboard = () => {
       if (!token) { errorToast("Login Required"); return; }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/join-tournament",
+        `${import.meta.env.VITE_API_URL}/join-tournament`,
         {
           method: "POST",
 
@@ -670,7 +670,7 @@ const Dashboard = () => {
 
       // REFRESH MY MATCHES
       fetch(
-        `http://127.0.0.1:8000/my-tournaments/${user.email}`
+        `${import.meta.env.VITE_API_URL}/my-tournaments/${user.email}`
       )
       .then((res) => res.json())
       .then((data) => {
@@ -935,7 +935,7 @@ const Dashboard = () => {
                     <img
                       src={
                         user?.profile_pic
-                          ? `http://127.0.0.1:8000${user.profile_pic}`
+                          ? `${import.meta.env.VITE_API_URL}${user.profile_pic}`
                           : "https://i.pravatar.cc/300"
                       }
                       alt="profile"
@@ -1483,25 +1483,7 @@ const Dashboard = () => {
                 // Status
                 // AUTO STATUS SYSTEM
                 let status = tournament.status?.toUpperCase() || "UPCOMING";
-
-                // // Manual Cancel
-                // if (status !== "CANCELLED") {
-
-                //   // Auto Live
-                //   if (diff <= 0 && diff >= -120) {
-
-                //     status = "LIVE";
-
-                //   }
-
-                //   // Auto Completed
-                //   if (diff < -120) {
-
-                //     status = "COMPLETED";
-
-                //   }
-
-                // }  
+ 
                 // USER JOINED 
                 const joined = isJoined(tournament._id);                
 
@@ -1887,7 +1869,7 @@ const Dashboard = () => {
 
                       <img
                         src={
-                          `http://127.0.0.1:8000${selectedTournament.result_image}`
+                          `${import.meta.env.VITE_API_URL}${selectedTournament.result_image}`
                         }
                         alt="result"
                         className="rounded-3xl w-full border border-yellow-500/20"
@@ -2133,7 +2115,7 @@ const Dashboard = () => {
                 />
 
                 <img
-                  src="http://127.0.0.1:8000/uploads/payment_qr/upi-qr.jpeg"
+                  src={`${import.meta.env.VITE_API_URL}/uploads/payment_qr/upi-qr.jpeg`}
                   alt="upi"
                   className="w-64 mx-auto rounded-2xl mb-5"
                 />

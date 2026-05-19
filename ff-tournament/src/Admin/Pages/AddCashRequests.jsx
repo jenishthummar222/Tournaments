@@ -28,7 +28,7 @@ const AddCashRequests = () => {
 
         const response = await fetch(
 
-        "http://127.0.0.1:8000/add-cash-requests",
+        `${import.meta.env.VITE_API_URL}/add-cash-requests`,
 
         {
             headers: {
@@ -75,7 +75,7 @@ const AddCashRequests = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/approve-add-cash/${id}`,
+        `${import.meta.env.VITE_API_URL}/approve-add-cash/${id}`,
 
         {
 
@@ -219,7 +219,7 @@ const AddCashRequests = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/edit-add-cash/${request._id}`,
+        `${import.meta.env.VITE_API_URL}/edit-add-cash/${request._id}`,
 
         {
 
@@ -320,7 +320,7 @@ const AddCashRequests = () => {
 
                 <img
 
-                  src={`http://127.0.0.1:8000/${request.screenshot}`}
+                  src={`${import.meta.env.VITE_API_URL}/${request.screenshot}`}
 
                   alt="payment"
 

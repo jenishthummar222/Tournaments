@@ -33,7 +33,7 @@ const ForgotPassword = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/send-forgot-otp",
+        `${import.meta.env.VITE_API_URL}/send-forgot-otp`,
         {
           method: "POST",
 
@@ -101,7 +101,7 @@ const ForgotPassword = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/reset-password",
+        `${import.meta.env.VITE_API_URL}/reset-password`,
         {
           method: "POST",
 

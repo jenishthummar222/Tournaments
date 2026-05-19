@@ -34,7 +34,7 @@ const deleteTransaction = async (id) => {
 
     const response = await fetch(
 
-      `http://127.0.0.1:8000/delete-transaction/${id}`,
+      `${import.meta.env.VITE_API_URL}/delete-transaction/${id}`,
 
       {
 
@@ -109,7 +109,7 @@ const editTransaction = async (transaction) => {
 
     const response = await fetch(
 
-      `http://127.0.0.1:8000/edit-transaction/${transaction._id}`,
+      `${import.meta.env.VITE_API_URL}/edit-transaction/${transaction._id}`,
 
       {
 
@@ -175,7 +175,7 @@ const Transactions = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/transactions",
+        `${import.meta.env.VITE_API_URL}/transactions`,
 
         {
 

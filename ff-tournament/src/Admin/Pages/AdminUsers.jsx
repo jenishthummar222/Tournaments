@@ -38,7 +38,7 @@ const AdminUsers = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/all-users",
+        `${import.meta.env.VITE_API_URL}/all-users`,
 
         {
 
@@ -91,7 +91,7 @@ const AdminUsers = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/ban-user/${id}`,
+        `${import.meta.env.VITE_API_URL}/ban-user/${id}`,
 
         {
 
@@ -134,7 +134,7 @@ const AdminUsers = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/unban-user/${id}`,
+        `${import.meta.env.VITE_API_URL}/unban-user/${id}`,
 
         {
 
@@ -185,7 +185,7 @@ const AdminUsers = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/delete-user/${id}`,
+        `${import.meta.env.VITE_API_URL}/delete-user/${id}`,
 
         {
 
@@ -238,7 +238,7 @@ const AdminUsers = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/update-wallet/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/update-wallet/${user._id}`,
 
         {
 
@@ -413,7 +413,7 @@ const AdminUsers = () => {
 
                   <img
 
-                    src={`http://127.0.0.1:8000${user.profile_pic}`}
+                    src={`${import.meta.env.VITE_API_URL}${user.profile_pic}`}
 
                     alt="profile"
 

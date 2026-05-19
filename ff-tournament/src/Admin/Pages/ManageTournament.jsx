@@ -60,7 +60,7 @@ const ManageTournament = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/cancel-tournament/${id}`,
+        `${import.meta.env.VITE_API_URL}/cancel-tournament/${id}`,
 
         {
 
@@ -117,7 +117,7 @@ const ManageTournament = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/tournaments"
+        `${import.meta.env.VITE_API_URL}/tournaments`
 
       );
 
@@ -163,7 +163,7 @@ const ManageTournament = () => {
 
         const response = await fetch(
 
-        `http://127.0.0.1:8000/upload-excel-result/${id}`,
+        `${import.meta.env.VITE_API_URL}/upload-excel-result/${id}`,
 
         {
 
@@ -233,7 +233,7 @@ const ManageTournament = () => {
 
         const response = await fetch(
 
-        `http://127.0.0.1:8000/upload-result-image/${id}`,
+        `${import.meta.env.VITE_API_URL}/upload-result-image/${id}`,
 
         {
 
@@ -316,7 +316,7 @@ const ManageTournament = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/delete-tournament/${id}`,
+        `${import.meta.env.VITE_API_URL}/delete-tournament/${id}`,
 
         {
 
@@ -356,7 +356,7 @@ const ManageTournament = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/update-room",
+        `${import.meta.env.VITE_API_URL}/update-room`,
 
         {
 
@@ -771,7 +771,7 @@ const ManageTournament = () => {
 
               {/* EXPORT */}
               <a
-                  href={`http://127.0.0.1:8000/export-players/${tournament._id}`}
+                  href={`${import.meta.env.VITE_API_URL}/export-players/${tournament._id}`}
 
                   onClick={async (e) => {
 
@@ -781,7 +781,7 @@ const ManageTournament = () => {
 
                       const response = await fetch(
 
-                          `http://127.0.0.1:8000/export-players/${tournament._id}`,
+                          `${import.meta.env.VITE_API_URL}/export-players/${tournament._id}`,
 
                           {
 

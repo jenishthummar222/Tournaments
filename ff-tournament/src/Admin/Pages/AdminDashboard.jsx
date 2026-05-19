@@ -55,7 +55,7 @@ const AdminDashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/upcoming-live-matches",
+        `${import.meta.env.VITE_API_URL}/upcoming-live-matches`,
 
         {
 
@@ -98,7 +98,7 @@ const AdminDashboard = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/admin-dashboard-stats",
+        `${import.meta.env.VITE_API_URL}/admin-dashboard-stats`,
 
         {
 

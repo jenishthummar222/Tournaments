@@ -33,7 +33,7 @@ const WithdrawRequests = () => {
 
       const response = await fetch(
 
-        "http://127.0.0.1:8000/withdraw-requests",
+        `${import.meta.env.VITE_API_URL}/withdraw-requests`,
 
         {
 
@@ -86,7 +86,7 @@ const WithdrawRequests = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/approve-withdraw/${id}`,
+        `${import.meta.env.VITE_API_URL}/approve-withdraw/${id}`,
 
         {
 
@@ -154,7 +154,7 @@ const WithdrawRequests = () => {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/retry-withdraw/${id}`,
+        `${import.meta.env.VITE_API_URL}/retry-withdraw/${id}`,
 
         {
 
