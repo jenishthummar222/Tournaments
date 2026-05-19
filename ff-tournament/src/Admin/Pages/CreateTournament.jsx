@@ -15,7 +15,7 @@ import {
   successToast,
   errorToast
 
-} from "../../utils/showToast";
+} from "../../Utils/showToast";
 
 const CreateTournament = () => {
 
