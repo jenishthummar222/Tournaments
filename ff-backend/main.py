@@ -10,10 +10,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from dateutil.parser import isoparse
 #import easyocr
-import cv2
-import re
-import numpy as np
-from PIL import Image
+
 from dateutil import parser
 
 from auth.auth import (
