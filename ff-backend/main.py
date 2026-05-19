@@ -9,7 +9,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from dateutil.parser import isoparse
-import easyocr
+#import easyocr
 import cv2
 import re
 import numpy as np
@@ -42,10 +42,10 @@ import pandas as pd
 import uuid
 
 
-reader = easyocr.Reader(['en'])
+#reader = easyocr.Reader(['en'])
 
 # Helper function for payment ss
-def extract_payment_data(image_path):
+"""def extract_payment_data(image_path):
 
     try:
 
@@ -191,6 +191,7 @@ def extract_payment_data(image_path):
             str(e)
 
         }
+"""
 
 # STATUS AUTO UPDATE
 def auto_update_tournaments():
@@ -2557,264 +2558,56 @@ def my_tournaments(email: str):
 async def add_cash(
 
     email: str = Form(...),
-
     amount: int = Form(...),
-
     screenshot: UploadFile = File(...),
-
     user_auth = Depends(verify_user)
 
 ):
 
     try:
 
-        # =========================
-        # CREATE FOLDER
-        # =========================
-
         os.makedirs(
-
             "payment_screenshots",
-
             exist_ok=True
-
         )
 
-        # =========================
-        # SAVE FILE
-        # =========================
-
         unique_filename = (
-
             f"{uuid.uuid4()}_{screenshot.filename}"
-
         )
 
         file_path = (
-
             f"payment_screenshots/{unique_filename}"
-
         )
 
         with open(file_path, "wb") as buffer:
 
             shutil.copyfileobj(
-
                 screenshot.file,
-
                 buffer
-
             )
-
-        # =========================
-        # OCR
-        # =========================
-
-        extracted = extract_payment_data(
-
-            file_path
-
-        )
-
-        transaction_id = extracted.get(
-
-            "transaction_id"
-
-        )
-
-        extracted_amount = extracted.get(
-
-            "amount"
-
-        )
-
-        # =========================
-        # PAYMENT STATUS
-        # =========================
-
-        payment_status = "verified"
-
-        # OCR FAILED
-        if extracted_amount is None:
-
-            payment_status = "manual_verify"
-
-        # AMOUNT MISMATCH
-        elif int(extracted_amount) != int(amount):
-
-            payment_status = "amount_mismatch"
-        
-        payment_date = extracted.get(
-
-            "date"
-
-        )
-
-        raw_text = extracted.get( "raw_text", "" )
-
-        # =========================
-        # PAYMENT STATUS
-        # =========================
-
-        success_words = [
-
-            "completed",
-            "successful",
-            "paid",
-            "payment successful",
-            "success"
-
-        ]
-
-        payment_success = False
-
-        for word in success_words:
-
-            if word.lower() in raw_text.lower():
-
-                payment_success = True
-
-                break
-
-        if not payment_success:
-
-            os.remove(file_path)
-
-            return {
-
-                "error":
-                "Payment status not successful"
-
-            }
-
-        # =========================
-        # INVALID SCREENSHOT
-        # =========================
-
-        if not transaction_id:
-
-            os.remove(file_path)
-
-            return {
-
-                "error":
-                "Invalid screenshot. Transaction ID not found."
-
-            }
-
-        # =========================
-        # DUPLICATE CHECK
-        # =========================
-
-        existing = db.add_cash_requests.find_one({
-
-            "transaction_id":
-            transaction_id
-
-        })
-
-        if existing:
-
-            # SUCCESS
-            if existing["status"] == "approved":
-
-                os.remove(file_path)
-
-                return {
-
-                    "error":
-                    "This payment screenshot already used."
-
-                }
-
-            # RETRY
-            elif existing["status"] == "retry":
-
-                pass
-
-            # PENDING
-            else:
-
-                os.remove(file_path)
-
-                return {
-
-                    "error":
-                    "This payment is already under verification."
-
-                }
-
-        # =========================
-        # INSERT REQUEST
-        # =========================
 
         request_id = db.add_cash_requests.insert_one({
 
-            "email":
-            email,
-
-            "amount":
-            amount,
-
-            "screenshot":
-            file_path,
-
-            "transaction_id":
-            transaction_id,
-
-            "ocr_amount":
-            extracted_amount,
-
-            "payment_status": payment_status,
-
-            "payment_date":
-            payment_date,
-
-            "status":
-            "pending",
-
-            "reason":
-            "",
-
-            "created_at":
-            datetime.now(timezone.utc)
+            "email": email,
+            "amount": amount,
+            "screenshot": file_path,
+            "status": "pending",
+            "reason": "",
+            "created_at": datetime.now(timezone.utc)
 
         }).inserted_id
 
-        # =========================
-        # TRANSACTION
-        # =========================
-
         db.transactions.insert_one({
 
-            "request_id":
-            str(request_id),
-
-            "email":
-            email,
-
-            "transaction_id":
-            transaction_id,
-
-            "type":
-            "ADD_CASH",
-
-            "amount":
-            amount,
-
-            "status":
-            "PENDING",
-
-            "message":
-            "Add cash request submitted",
-
-            "created_at":
-            datetime.now(timezone.utc),
-
+            "request_id": str(request_id),
+            "email": email,
+            "type": "ADD_CASH",
+            "amount": amount,
+            "status": "PENDING",
+            "message": "Add cash request submitted",
+            "created_at": datetime.now(timezone.utc),
             "expireAt":
-
             datetime.now(timezone.utc)
-
             + timedelta(days=30)
 
         })
