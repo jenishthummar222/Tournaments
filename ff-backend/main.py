@@ -304,6 +304,8 @@ os.makedirs(
     exist_ok=True
 )
 
+os.makedirs("payment_screenshots", exist_ok=True) 
+
 app.mount(
     "/exports",
     StaticFiles(directory="exports"),
