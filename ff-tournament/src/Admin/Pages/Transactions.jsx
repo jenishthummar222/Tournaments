@@ -18,7 +18,7 @@ import {
 
   errorToast
 
-} from "../../utils/showToast";
+} from "../../Utils/showToast";
 
 const deleteTransaction = async (id) => {
 

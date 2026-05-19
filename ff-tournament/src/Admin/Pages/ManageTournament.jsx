@@ -24,7 +24,7 @@ import {
   successToast,
   errorToast
 
-} from "../../utils/showToast";
+} from "../../Utils/showToast";
 
 import { useLocation } from "react-router-dom";
 

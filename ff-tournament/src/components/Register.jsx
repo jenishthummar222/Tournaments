@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   successToast,
   errorToast,
-} from "../utils/showToast";
+} from "../Utils/showToast";
 
 export default function Register() {
 
