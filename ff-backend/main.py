@@ -346,7 +346,7 @@ app.add_middleware(
 
         "http://localhost:5173",
         "https://jk-tournaments.onrender.com",
-        "https://tournaments-zeta.vercel.app"
+        "https://tournaments-1pl2xc540-jk-tournaments.vercel.app"
 
     ],
 
