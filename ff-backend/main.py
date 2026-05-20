@@ -1574,77 +1574,82 @@ async def send_register_otp(
     profile_pic: UploadFile = File(...)
 
 ):
+    try:
 
-    existing_user = db.users.find_one({
-        "email": email
-    })
+        existing_user = db.users.find_one({
+            "email": email
+        })
 
-    if existing_user:
+        if existing_user:
 
-        return {
-            "error":
-            "Email already exists"
-        }
+            return {
+                "error":
+                "Email already exists"
+            }
 
-    
-    upload_result = cloudinary.uploader.upload(
+        
+        upload_result = cloudinary.uploader.upload(
 
-        profile_pic.file,
+            profile_pic.file,
 
-        folder="ff_tournament_profiles"
+            folder="ff_tournament_profiles"
 
-    )
-    
-    # IMAGE URL
-    profile_url = upload_result["secure_url"]
+        )
+        
+        # IMAGE URL
+        profile_url = upload_result["secure_url"]
 
-    otp = str(
+        otp = str(
 
-        random.randint(
-            100000,
-            999999
+            random.randint(
+                100000,
+                999999
+            )
+
         )
 
-    )
+        expire = (
+            datetime.now(timezone.utc)
+            + timedelta(minutes=5)
+        )
 
-    expire = (
-        datetime.now(timezone.utc)
-        + timedelta(minutes=5)
-    )
+        # Remove old OTP
+        db.otps.delete_many({
+            "email": email
+        })
 
-    # Remove old OTP
-    db.otps.delete_many({
-        "email": email
-    })
+        # Save OTP
+        db.otps.insert_one({
 
-    # Save OTP
-    db.otps.insert_one({
+            "name": name,
 
-        "name": name,
+            "mobile": mobile,
 
-        "mobile": mobile,
+            "email": email,
 
-        "email": email,
+            "password": hash_password(password),
 
-        "password": hash_password(password),
+            "profile_pic": profile_url,
 
-        "profile_pic": profile_url,
+            "otp": otp,
 
-        "otp": otp,
+            "expire": expire
 
-        "expire": expire
+        })
 
-    })
 
-    send_otp(
-        email,
-        otp
-    )
+        send_otp(
+            email,
+            otp
+        )
 
-    return {
-        "message":
-        "OTP Sent Successfully"
-    }
+        return {
+            "message":
+            "OTP Sent Successfully"
+        }
+    except Exception as e:
+        print("ERROR:", str(e))
+        return {"error": str(e)}
 
 @app.post("/send-forgot-otp")
 def send_forgot_otp(data: dict):
