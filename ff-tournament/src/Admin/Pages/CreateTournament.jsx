@@ -79,16 +79,7 @@ const CreateTournament = () => {
       // FIX DATE FORMAT
       // =========================
 
-      const formattedMatchTime = new Date(
-
-        matchTime
-
-      ).toLocaleString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        dateStyle: "medium",
-        timeStyle: "short",
-        hour12: true
-      });
+      const formattedMatchTime =   matchTime      
 
       const response = await fetch(
 
@@ -363,7 +354,9 @@ const CreateTournament = () => {
 
           <input
             type="datetime-local"
-            min={new Date().toISOString().slice(0,16)}
+            min={new Date(
+              Date.now() - new Date().getTimezoneOffset() * 60000
+            ).toISOString().slice(0,16)}
             value={matchTime}
             onChange={(e) =>
               setMatchTime(e.target.value)

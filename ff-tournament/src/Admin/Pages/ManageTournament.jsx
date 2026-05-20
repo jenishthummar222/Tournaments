@@ -42,7 +42,11 @@ const ManageTournament = () => {
     const location = useLocation();
 
     const tournamentRefs = useRef({});
-
+    
+    const [uploadProgress, setUploadProgress] = useState({});
+  
+    const [uploading, setUploading] = useState({});
+  
     const queryParams = new URLSearchParams(location.search);
 
     const selectedTournament = queryParams.get("tournament");
@@ -102,12 +106,23 @@ const ManageTournament = () => {
   };
   
   const formatMatchTime = (time) => {
-    if (!time) return "Not Scheduled";
 
-    return new Date(time).toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      hour12: true
-    });
+    if (!time) {
+
+      return "Not Scheduled";
+
+    }
+
+    return new Date(time).toLocaleString(
+      "en-IN",
+      {
+        timeZone: "Asia/Kolkata",
+        dateStyle: "medium",
+        timeStyle: "short",
+        hour12: true
+      }
+    );
+
   };
 
   // FETCH TOURNAMENTS
@@ -141,139 +156,124 @@ const ManageTournament = () => {
     // ==============================
 
     const uploadExcelResult = async (id) => {
+      const file = excelFile[id];
 
-    const file = excelFile[id];
-
-    if (!file) {
-
+      if (!file) {
         errorToast("Select Excel File");
-
         return;
+      }
 
-    }
-
-    try {
+      try {
+        setUploading((prev) => ({ ...prev, [id]: true }));
+        setUploadProgress((prev) => ({ ...prev, [id]: 0 }));
 
         const formData = new FormData();
+        formData.append("excel_file", file);
 
-        formData.append(
-        "excel_file",
-        file
+        const xhr = new XMLHttpRequest();
+
+        xhr.open(
+          "POST",
+          `${import.meta.env.VITE_API_URL}/upload-excel-result/${id}`
         );
 
-        const response = await fetch(
-
-        `${import.meta.env.VITE_API_URL}/upload-excel-result/${id}`,
-
-        {
-
-            method: "POST",
-
-            headers: {
-
-            Authorization:
-                `Bearer ${localStorage.getItem("token")}`
-
-            },
-
-            body: formData
-
-        }
-
+        xhr.setRequestHeader(
+          "Authorization",
+          `Bearer ${localStorage.getItem("token")}`
         );
 
-        const data = await response.json();
+        // 🔥 PROGRESS TRACKING
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress((prev) => ({ ...prev, [id]: percent }));
+          }
+        };
 
-        if (data.error) {
+        xhr.onload = () => {
+          setUploading((prev) => ({ ...prev, [id]: false }));
 
-        errorToast(data.error);
+          if (xhr.status === 200) {
+            successToast("Excel Uploaded Successfully");
+            setUploadProgress((prev) => ({ ...prev, [id]: 100 }));
+            fetchTournaments();
+          } else {
+            errorToast("Excel Upload Failed");
+          }
+        };
 
-        return;
+        xhr.onerror = () => {
+          setUploading((prev) => ({ ...prev, [id]: false }));
+          errorToast("Excel Upload Failed");
+        };
 
-        }
-
-        successToast(data.message);
-
-        fetchTournaments();
-
-    }
-
-    catch {
-
+        xhr.send(formData);
+      } catch {
+        setUploading((prev) => ({ ...prev, [id]: false }));
         errorToast("Excel Upload Failed");
-
-    }
-
+      }
     };
 
     // ==============================
     // UPLOAD RESULT IMAGE
     // ==============================
 
-    const uploadResultImage = async (id) => {
+   const uploadResultImage = async (id) => {
+      const file = resultImage[id];
 
-    const file = resultImage[id];
-
-    if (!file) {
-
+      if (!file) {
         errorToast("Select Result Image");
-
         return;
+      }
 
-    }
-
-    try {
+      try {
+        setUploading((prev) => ({ ...prev, [id]: true }));
+        setUploadProgress((prev) => ({ ...prev, [id]: 0 }));
 
         const formData = new FormData();
+        formData.append("result_image", file);
 
-        formData.append(
-        "result_image",
-        file
+        const xhr = new XMLHttpRequest();
+
+        xhr.open(
+          "POST",
+          `${import.meta.env.VITE_API_URL}/upload-result-image/${id}`
         );
 
-        const response = await fetch(
-
-        `${import.meta.env.VITE_API_URL}/upload-result-image/${id}`,
-
-        {
-
-            method: "POST",
-
-            headers: {
-
-            Authorization:
-                `Bearer ${localStorage.getItem("token")}`
-
-            },
-
-            body: formData
-
-        }
-
+        xhr.setRequestHeader(
+          "Authorization",
+          `Bearer ${localStorage.getItem("token")}`
         );
 
-        const data = await response.json();
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress((prev) => ({ ...prev, [id]: percent }));
+          }
+        };
 
-        if (data.error) {
+        xhr.onload = () => {
+          setUploading((prev) => ({ ...prev, [id]: false }));
 
-        errorToast(data.error);
+          if (xhr.status === 200) {
+            successToast("Image Uploaded Successfully");
+            setUploadProgress((prev) => ({ ...prev, [id]: 100 }));
+            fetchTournaments();
+          } else {
+            errorToast("Image Upload Failed");
+          }
+        };
 
-        return;
+        xhr.onerror = () => {
+          setUploading((prev) => ({ ...prev, [id]: false }));
+          errorToast("Image Upload Failed");
+        };
 
-        }
-
-        successToast(data.message);
-
-        fetchTournaments();
-
-    }
-
-    catch {
-
+        xhr.send(formData);
+      } catch {
+        setUploading((prev) => ({ ...prev, [id]: false }));
         errorToast("Image Upload Failed");
-
-    }
-
+      }
     };
 
   useEffect(() => {
@@ -813,8 +813,24 @@ const ManageTournament = () => {
 
                       link.href = url;
 
-                      link.download =
-                          `${tournament.title}.xlsx`;
+                      const matchDate = new Date(tournament.match_time);
+
+                      const formattedDate = matchDate
+                        .toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true
+                        })
+                        .replace(",", "")
+                        .replace(/\//g, "-")
+                        .replace(" ", "_");
+
+                      const safeTitle = tournament.title.replace(/\s+/g, "_");
+
+                      link.download = `${safeTitle}_${formattedDate}.xlsx`;
 
                       document.body.appendChild(link);
 
@@ -938,32 +954,37 @@ const ManageTournament = () => {
 
                     {/* BUTTON */}
                     <button
-
-                      onClick={() =>
-
-                        uploadExcelResult(
-                          tournament._id
-                        )
-
-                      }
-
+                      onClick={() => uploadExcelResult(tournament._id)}
                       className="
-                      mt-4
-                      w-full
-                      py-4
-                      rounded-2xl
-                      bg-yellow-400
-                      text-black
-                      font-black
-                      hover:scale-[1.02]
-                      transition-all
+                        mt-4
+                        w-full
+                        py-4
+                        rounded-2xl
+                        bg-yellow-400
+                        text-black
+                        font-black
+                        hover:scale-[1.02]
+                        transition-all
                       "
-
                     >
-
                       Upload Excel Result
-
                     </button>
+
+                    {/* PROGRESS BAR (OUTSIDE BUTTON) */}
+                    {uploading[tournament._id] && excelFile[tournament._id] && (
+                      <div className="mt-3">
+                        <div className="w-full bg-gray-700 rounded-full h-2">
+                          <div
+                            className="bg-yellow-400 h-2 rounded-full transition-all"
+                            style={{ width: `${uploadProgress[tournament._id] || 0}%` }}
+                          />
+                        </div>
+
+                        <p className="text-xs text-gray-300 mt-1">
+                          Uploading Excel... {uploadProgress[tournament._id] || 0}%
+                        </p>
+                      </div>
+                    )}
 
                   </div>
 
@@ -1073,6 +1094,21 @@ const ManageTournament = () => {
                       Upload Result Image
 
                     </button>
+
+                    {uploading[tournament._id] && resultImage[tournament._id] && (
+                      <div className="mt-3">
+                        <div className="w-full bg-gray-700 rounded-full h-2">
+                          <div
+                            className="bg-green-400 h-2 rounded-full transition-all"
+                            style={{ width: `${uploadProgress[tournament._id] || 0}%` }}
+                          />
+                        </div>
+
+                        <p className="text-xs text-gray-300 mt-1">
+                          Uploading Image... {uploadProgress[tournament._id] || 0}%
+                        </p>
+                      </div>
+                    )}
 
                   </div>
 

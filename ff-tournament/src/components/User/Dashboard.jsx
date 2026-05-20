@@ -935,7 +935,7 @@ const Dashboard = () => {
                     <img
                       src={
                         user?.profile_pic
-                          ? `${import.meta.env.VITE_API_URL}${user.profile_pic}`
+                          ? `${user.profile_pic}`
                           : "https://i.pravatar.cc/300"
                       }
                       alt="profile"
@@ -1463,26 +1463,25 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {matchesToShow.map((tournament, index) => {
+                // Status
+                // AUTO STATUS SYSTEM
+                let status = tournament.status?.toUpperCase() || "UPCOMING";
                 
-                const now = currentTime;
+                const now = currentTime.getTime();
 
                 const startTime = new Date(
                   tournament.match_time
-                )                
+                ).getTime();                
 
                 // Minutes Difference
                 const diff =
-                  (startTime - now) / 1000 / 60;
+                  (startTime - now) / 60000;
                 // For Open Close.
                 const isJoinClosed = diff <= 10;
 
                 // Show Room Before 10 Min
                 const canShowRoom =
-                  diff <= 10 ;
-
-                // Status
-                // AUTO STATUS SYSTEM
-                let status = tournament.status?.toUpperCase() || "UPCOMING";
+                  diff <= 10 ;                
  
                 // USER JOINED 
                 const joined = isJoined(tournament._id);                
@@ -1680,13 +1679,13 @@ const Dashboard = () => {
                           <span
                             className={`px-5 py-2 rounded-full font-bold border
                               ${
-                                isJoinClosed
+                                isJoinClosed || isCompleted
                                   ? "bg-red-500/10 border-red-500/20 text-red-400"
                                   : "bg-orange-500/10 border-orange-500/20 text-orange-400"
                               }
                             `}
                           >
-                            {isJoinClosed ? "CLOSED ❌" : "OPEN 🔥"}
+                            {isJoinClosed || isCompleted ? "CLOSED ❌" : "OPEN 🔥"}
                           </span>
 
                         )}
@@ -1757,17 +1756,18 @@ const Dashboard = () => {
           </div>
         
         {showModal && selectedTournament && (() => {
-
-          const now = currentTime;
+          
+          const now = currentTime.getTime();
 
           const startTime = new Date(
             selectedTournament.match_time
-          )
+          ).getTime();
+            
           const diff =
-            (startTime - now) / 1000 / 60;
+            (startTime - now) / 60000;
 
             const canJoin = diff > 10;
-            console.log(canJoin)
+            
           // MATCH STATUS
           const isCompleted = selectedTournament.status === "completed";
             
@@ -1869,7 +1869,7 @@ const Dashboard = () => {
 
                       <img
                         src={
-                          `${import.meta.env.VITE_API_URL}${selectedTournament.result_image}`
+                          `${selectedTournament.result_image}`
                         }
                         alt="result"
                         className="rounded-3xl w-full border border-yellow-500/20"
@@ -2115,7 +2115,7 @@ const Dashboard = () => {
                 />
 
                 <img
-                  src={`${import.meta.env.VITE_API_URL}/uploads/payment_qr/upi-qr.jpeg`}
+                  src="https://res.cloudinary.com/drrxe4qzt/image/upload/v1779270119/upi-qr_z70r4m.jpg"
                   alt="upi"
                   className="w-64 mx-auto rounded-2xl mb-5"
                 />

@@ -413,7 +413,7 @@ const AdminUsers = () => {
 
                   <img
 
-                    src={`${import.meta.env.VITE_API_URL}${user.profile_pic}`}
+                    src={`${user.profile_pic}`}
 
                     alt="profile"
 
