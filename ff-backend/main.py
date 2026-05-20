@@ -1586,30 +1586,17 @@ async def send_register_otp(
             "Email already exists"
         }
 
-    # IMAGE EXTENSION
-    extension = os.path.splitext(
-        profile_pic.filename
-    )[1]
+    
+    upload_result = cloudinary.uploader.upload(
 
-    # FILE NAME
-    filename = f"{email}{extension}"
+        profile_pic.file,
 
-    # FILE PATH
-    file_path = os.path.join(
-        UPLOAD_DIR,
-        filename
+        folder="ff_tournament_profiles"
+
     )
-
-    # SAVE IMAGE
-    with open(file_path, "wb") as buffer:
-
-        shutil.copyfileobj(
-            profile_pic.file,
-            buffer
-        )
     
     # IMAGE URL
-    profile_url = f"/uploads/{filename}"
+    profile_url = upload_result["secure_url"]
 
     otp = str(
 
@@ -1724,7 +1711,7 @@ def reset_password(data: dict):
         return {"error": "OTP Expired"}
 
 
-    if saved["otp"] != data["otp"]:
+    if str(saved["otp"]) != str(data["otp"]):
 
         return {
             "error": "Wrong OTP"
@@ -1834,15 +1821,13 @@ def register(data: dict):
     if expire.tzinfo is None:
         expire = expire.replace(tzinfo=timezone.utc)
     
-    print("now",now)
-    print("exp",expire)
 
     if now > expire:
         db.otps.delete_many({"email": data["email"]})
         return {"error": "OTP Expired"}
 
     # OTP Check
-    if saved["otp"] != data["otp"]:
+    if str(saved["otp"]) != str(data["otp"]):
 
         return {
             "error":
