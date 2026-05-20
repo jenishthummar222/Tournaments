@@ -9,7 +9,6 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from dateutil.parser import isoparse
-#import easyocr
 
 from dateutil import parser
 
@@ -33,164 +32,182 @@ from auth.jwt_handler import create_token
 from bson import ObjectId
 import random
 import smtplib
+import cloudinary
+import cloudinary.uploader
 import os
 import shutil
 import pandas as pd
 import uuid
 
+#email
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 #reader = easyocr.Reader(['en'])
 
-# Helper function for payment ss
-"""def extract_payment_data(image_path):
+# # Helper function for payment ss
+# """def extract_payment_data(image_path):
 
-    try:
+#     try:
 
-        results = reader.readtext(image_path)
+#         results = reader.readtext(image_path)
 
-        full_text = " ".join(
+#         full_text = " ".join(
 
-            [text[1] for text in results]
+#             [text[1] for text in results]
 
-        )
+#         )
 
-        full_text = full_text.replace("\n", " ")
+#         full_text = full_text.replace("\n", " ")
 
-        print("OCR TEXT:", full_text)
+#         print("OCR TEXT:", full_text)
 
         
-        # =========================
-        # TRANSACTION ID
-        # =========================
+#         # =========================
+#         # TRANSACTION ID
+#         # =========================
 
-        transaction_id = None
+#         transaction_id = None
 
-        possible_ids = re.findall(
+#         possible_ids = re.findall(
 
-            r'\b[A-Z0-9]{10,20}\b',
+#             r'\b[A-Z0-9]{10,20}\b',
 
-            full_text
+#             full_text
 
-        )
+#         )
 
-        filtered_ids = []
+#         filtered_ids = []
 
-        for item in possible_ids:
+#         for item in possible_ids:
 
-            # REMOVE BAD MATCHES
-            if item.lower() in [
+#             # REMOVE BAD MATCHES
+#             if item.lower() in [
 
-                "transaction",
-                "completed",
-                "googlepay",
-                "payment",
-                "success"
+#                 "transaction",
+#                 "completed",
+#                 "googlepay",
+#                 "payment",
+#                 "success"
 
-            ]:
+#             ]:
 
-                continue
+#                 continue
 
-            # ONLY VALID LENGTH
-            if len(item) >= 10:
+#             # ONLY VALID LENGTH
+#             if len(item) >= 10:
 
-                filtered_ids.append(item)
+#                 filtered_ids.append(item)
 
-        # TAKE FIRST VALID
-        if filtered_ids:
+#         # TAKE FIRST VALID
+#         if filtered_ids:
 
-            transaction_id = filtered_ids[0]
-
-
-        # =========================
-        # AMOUNT
-        # =========================
-
-        amount = None
-
-        amount_patterns = [
-
-            r'₹\s*([0-9]+(?:\.[0-9]{1,2})?)',
-
-            r'Rs\.?\s*([0-9]+(?:\.[0-9]{1,2})?)',
-
-            r'INR\s*([0-9]+(?:\.[0-9]{1,2})?)',
-
-            r'Amount\s*Paid\s*₹?\s*([0-9]+(?:\.[0-9]{1,2})?)',
-
-            r'Paid\s*:?\s*₹?\s*([0-9]+(?:\.[0-9]{1,2})?)'
-
-        ]
-
-        for pattern in amount_patterns:
-
-            match = re.search(
-
-                pattern,
-
-                full_text,
-
-                re.IGNORECASE
-
-            )
-
-            if match:
-
-                amount = int(
-
-                    float(match.group(1))
-
-                )
-
-                break
+#             transaction_id = filtered_ids[0]
 
 
+#         # =========================
+#         # AMOUNT
+#         # =========================
 
-        # =========================
-        # DATE
-        # =========================
+#         amount = None
 
-        payment_date = None
+#         amount_patterns = [
 
-        date_match = re.search(
+#             r'₹\s*([0-9]+(?:\.[0-9]{1,2})?)',
 
-            r'([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})',
+#             r'Rs\.?\s*([0-9]+(?:\.[0-9]{1,2})?)',
 
-            full_text
+#             r'INR\s*([0-9]+(?:\.[0-9]{1,2})?)',
 
-        )
+#             r'Amount\s*Paid\s*₹?\s*([0-9]+(?:\.[0-9]{1,2})?)',
 
-        if date_match:
+#             r'Paid\s*:?\s*₹?\s*([0-9]+(?:\.[0-9]{1,2})?)'
 
-            payment_date = date_match.group(1)
+#         ]
 
-        return {
+#         for pattern in amount_patterns:
 
-            "transaction_id":
-            transaction_id,
+#             match = re.search(
 
-            "amount":
-            amount,
+#                 pattern,
 
-            "date":
-            payment_date,
+#                 full_text,
 
-            "raw_text":
-            full_text
+#                 re.IGNORECASE
 
-        }
+#             )
+
+#             if match:
+
+#                 amount = int(
+
+#                     float(match.group(1))
+
+#                 )
+
+#                 break
+
+
+
+#         # =========================
+#         # DATE
+#         # =========================
+
+#         payment_date = None
+
+#         date_match = re.search(
+
+#             r'([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})',
+
+#             full_text
+
+#         )
+
+#         if date_match:
+
+#             payment_date = date_match.group(1)
+
+#         return {
+
+#             "transaction_id":
+#             transaction_id,
+
+#             "amount":
+#             amount,
+
+#             "date":
+#             payment_date,
+
+#             "raw_text":
+#             full_text
+
+#         }
         
 
-    except Exception as e:
+#     except Exception as e:
 
-        return {
+#         return {
 
-            "error":
-            str(e)
+#             "error":
+#             str(e)
 
-        }
-"""
+#         }
+# """
 
-# STATUS AUTO UPDATE
+cloudinary.config(
+
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+
+    secure=True
+
+)
+# +=+=+=+=+=+=+=+=+=+=+=+
+# auto Update Status..
+# =+=+=+=+=+=+=++==+=+=+=
 def auto_update_tournaments():
 
     while True:
@@ -199,54 +216,74 @@ def auto_update_tournaments():
             db.tournaments.find({})
         )
 
-        now = datetime.now(timezone.utc)
-
         for tournament in tournaments:
 
             try:
 
-                # SKIP CANCELLED
                 if tournament.get("status") == "cancelled":
-
                     continue
 
-                match_time = tournament.get(
-                    "match_time"
-                )
+                match_time = tournament.get("match_time")
+
                 if not match_time:
-
                     continue
 
-                 # ✅ FIX: ensure datetime object
+                ist = timezone(timedelta(hours=5, minutes=30))
+
+                # GET MATCH TIME
                 if isinstance(match_time, str):
                     start_time = parser.isoparse(match_time)
                 else:
                     start_time = match_time
+                
+                # ENSURE UTC
+                if start_time.tzinfo is None:
+                    start_time = start_time.replace(tzinfo=timezone.utc)
 
-                ## ALWAYS convert to UTC properly
-                start_time = start_time.astimezone(timezone.utc)
+                # CURRENT UTC TIME
+                now_utc = datetime.now(timezone.utc)
 
+                # DIFFERENCE
                 diff = (
-                    now - start_time
+                    start_time - now_utc
                 ).total_seconds() / 60
 
-                # DEFAULT
-                status = "upcoming"
+                # CONVERT FOR PRINT ONLY
+                match_ist = start_time.astimezone(ist)
 
-                # RESULT UPLOADED
-                if tournament.get("result_uploaded",False):
+                print("MINUTES LEFT:", diff)
+
+                print(
+                    "NOW IST:",
+                    now_utc.astimezone(ist)
+                )
+
+                print(
+                    "MATCH IST:",
+                    match_ist
+                )
+
+                # STATUS
+                if tournament.get(
+                    "result_uploaded",
+                    False
+                ):
 
                     status = "completed"
 
-                # LIVE
-                elif -5 <= diff :
-                    status = "live"
-
-                # UPCOMING
-                elif diff < -5:
+                elif diff > 0:
 
                     status = "upcoming"
-                
+
+                elif diff >= -240:
+
+                    status = "live"
+
+                else:
+
+                    status = "completed"
+
+                print("Status :-", status)
 
                 db.tournaments.update_one(
 
@@ -258,8 +295,7 @@ def auto_update_tournaments():
                     {
                         "$set": {
 
-                            "status":
-                            status
+                            "status": status
 
                         }
                     }
@@ -294,29 +330,6 @@ app = FastAPI()
 # STATIC FOLDERS
 # ==============================
 
-os.makedirs(
-    "exports",
-    exist_ok=True
-)
-
-os.makedirs(
-    "results",
-    exist_ok=True
-)
-
-os.makedirs("payment_screenshots", exist_ok=True) 
-
-app.mount(
-    "/exports",
-    StaticFiles(directory="exports"),
-    name="exports"
-)
-
-app.mount(
-    "/results",
-    StaticFiles(directory="results"),
-    name="results"
-)
 
 app.mount(
     "/uploads",
@@ -324,11 +337,6 @@ app.mount(
     name="uploads"
 )
 
-app.mount(
-    "/payment_screenshots",
-    StaticFiles(directory="payment_screenshots"),
-    name="payment_screenshots"
-)
 
 app.add_middleware(
 
@@ -402,8 +410,9 @@ def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(securi
 
         )
 
-#Update Profile Pic
-# Upload Profile Pic
+
+
+# Update Profile Pic
 @app.post("/upload-profile")
 async def upload_profile(
 
@@ -412,40 +421,59 @@ async def upload_profile(
     profile_pic: UploadFile = File(...)
 
 ):
+    contents = await profile_pic.read()
 
-    os.makedirs(
+    if len(contents) > 2 * 1024 * 1024:
+        return {"error": "File must be less than 2MB"}
 
-        "uploads/profile_pics",
+    await profile_pic.seek(0)
 
-        exist_ok=True
+
+    # FIND USER
+    user = db.users.find_one({
+
+        "email": email
+
+    })
+
+    if not user:
+
+        return {
+
+            "error":
+            "User not found"
+
+        }
+
+    # DELETE OLD IMAGE
+    old_public_id = user.get(
+
+        "profile_public_id"
 
     )
 
-    # UNIQUE FILE NAME
-    unique_filename = (
+    if old_public_id:
 
-        f"{uuid.uuid4()}_{profile_pic.filename}"
+        cloudinary.uploader.destroy(
 
-    )
-
-    file_path = (
-
-        f"uploads/profile_pics/{unique_filename}"
-
-    )
-
-    # SAVE FILE
-    with open(file_path, "wb") as buffer:
-
-        shutil.copyfileobj(
-
-            profile_pic.file,
-
-            buffer
+            old_public_id
 
         )
 
-    # SAVE DB
+    # UPLOAD NEW IMAGE
+    upload_result = cloudinary.uploader.upload(
+
+        profile_pic.file,
+
+        folder="ff_tournament_profiles"
+
+    )
+
+    profile_url = upload_result["secure_url"]
+
+    public_id = upload_result["public_id"]
+
+    # UPDATE DATABASE
     db.users.update_one(
 
         {
@@ -456,7 +484,10 @@ async def upload_profile(
             "$set": {
 
                 "profile_pic":
-                f"/{file_path}"
+                profile_url,
+
+                "profile_public_id":
+                public_id
 
             }
         }
@@ -469,11 +500,10 @@ async def upload_profile(
         "Profile Updated",
 
         "profile_pic":
-        f"/{file_path}"
+        profile_url
 
     }
 
-# Update User Name
 # Update Name
 @app.post("/update-name")
 async def update_name(data: dict):
@@ -505,122 +535,260 @@ async def update_name(data: dict):
 
     }
 
+
 # ==============================
 # EXPORT PLAYERS EXCEL
 # ==============================
 
 @app.get("/export-players/{tournament_id}")
 def export_players(
+
     tournament_id: str,
+
     admin = Depends(verify_admin)
+
 ):
 
-    players = list(
+    try:
 
-        db.joined.find({
+        # =========================
+        # PLAYERS
+        # =========================
 
-            "tournament_id":
-            tournament_id
+        players = list(
+
+            db.joined.find({
+
+                "tournament_id":
+                tournament_id
+
+            })
+
+        )
+
+        if not players:
+
+            return {
+
+                "error":
+                "No Players Found"
+
+            }
+
+        # =========================
+        # TOURNAMENT
+        # =========================
+
+        tournament = db.tournaments.find_one({
+
+            "_id":
+            ObjectId(tournament_id)
 
         })
 
-    )
-    if not players:
+        if not tournament:
 
-        return {
+            return {
 
-            "error":
-            "No Players Found"
+                "error":
+                "Tournament Not Found"
 
-        }
-    
-    # TOURNAMENT
-    tournament = db.tournaments.find_one({
+            }
 
-        "_id":
-        ObjectId(tournament_id)
+        prize_pool = safe_int(
 
-    })
+            tournament.get(
+                "prize",
+                0
+            )
 
-    prize_pool = tournament.get(
-        "prize",
-        0
-    )
+        )
 
-    excel_data = []
-    try:
+        # =========================
+        # EXCEL DATA
+        # =========================
+
+        excel_data = []
+
         for player in players:
 
             excel_data.append({
 
-            "Game Name":
-            player.get(
-                "ingame_name",
-                ""
-            ),
+                "Game Name":
+                str(
+                    player.get(
+                        "ingame_name",
+                        ""
+                    )
+                ),
 
-            "Email":
-            player.get(
-                "email",
-                ""
-            ),
+                "Email":
+                str(
+                    player.get(
+                        "email",
+                        ""
+                    )
+                ),
 
-            "BOOYAH":0,           
+                "BOOYAH":
+                0,
 
-            "Position": 0,
+                "Position":
+                0,
 
-            "Kills": 0,
+                "Kills":
+                0,
 
-            "Total":0,
+                "Total":
+                0,
 
-            "Win/Loss": 0,
+                "Win/Loss":
+                0,
 
-            "Prize Pool": prize_pool
-        })
-            
-    except:
-        print("error in excel data")
-    
-    try:
-    
-        print(players)
-        print(len(players))
+                "Prize Pool":
+                prize_pool
 
-        df = pd.DataFrame(
-        excel_data
+            })
+
+        # =========================
+        # DATAFRAME
+        # =========================
+
+        df = pd.DataFrame(excel_data)
+
+        # =========================
+        # CLOUDINARY DELETE OLD
+        # =========================
+
+        old_public_id = tournament.get(
+
+            "players_excel_public_id"
+
         )
+
+        if old_public_id:
+
+            try:
+
+                cloudinary.uploader.destroy(
+
+                    old_public_id,
+
+                    resource_type="raw"
+
+                )
+
+            except Exception as e:
+
+                print("OLD EXCEL DELETE ERROR:", e)
+
+        # =========================
+        # LOCAL TEMP FILE
+        # =========================
 
         os.makedirs(
+
             "exports",
+
             exist_ok=True
-        )
-        filename = (
-            f"exports/{tournament_id}.xlsx"
+
         )
 
+        local_path = (
+
+            f"exports/{tournament_id}.xlsx"
+
+        )
+
+        # REMOVE OLD LOCAL FILE
+        if os.path.exists(local_path):
+
+            os.remove(local_path)
+
+        # SAVE EXCEL
         df.to_excel(
 
-            filename,
+            local_path,
 
             index=False,
 
             engine="openpyxl"
 
         )
-        return FileResponse(
 
-            path=filename,
+        # =========================
+        # UPLOAD TO CLOUDINARY
+        # =========================
 
-            filename=
-            f"{tournament_id}.xlsx",
+        upload_result = cloudinary.uploader.upload(
 
-            media_type=
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            local_path,
+
+            resource_type="raw",
+
+            folder="ff_tournament_exports",
+
+            public_id=f"{tournament_id}_players",
+
+            overwrite=True
 
         )
-    except Exception as e :
-        print("Error in excel file saveing",e)
 
+        excel_url = upload_result["secure_url"]
+
+        public_id = upload_result["public_id"]
+
+        # =========================
+        # SAVE DB
+        # =========================
+
+        db.tournaments.update_one(
+
+            {
+                "_id":
+                ObjectId(tournament_id)
+            },
+
+            {
+                "$set": {
+
+                    "players_excel":
+                    excel_url,
+
+                    "players_excel_public_id":
+                    public_id
+
+                }
+
+            }
+
+        )
+
+        # =========================
+        # RETURN FILE
+        # =========================
+
+        return FileResponse(
+
+            path=local_path,
+
+            filename=f"{tournament_id}.xlsx",
+
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+        )
+
+    except Exception as e:
+
+        print("EXPORT ERROR:", str(e))
+
+        return {
+
+            "error":
+            str(e)
+
+        }
+    
 # ==============================
 # SAFE INTEGER
 # ==============================
@@ -700,6 +868,26 @@ async def upload_excel_result(
             }
 
         # =========================
+        # DELETE OLD EXCEL
+        # =========================
+
+        old_public_id = tournament.get(
+
+            "result_excel_public_id"
+
+        )
+
+        if old_public_id:
+
+            cloudinary.uploader.destroy(
+
+                old_public_id,
+
+                resource_type="raw"
+
+            )
+
+        # =========================
         # REVERSE OLD DATA
         # =========================
 
@@ -725,7 +913,7 @@ async def upload_excel_result(
 
             )
 
-            # REMOVE WALLET
+            # RETURN USER WALLET
             if old_amount > 0:
 
                 db.users.update_one(
@@ -742,6 +930,37 @@ async def upload_excel_result(
                             -old_amount
 
                         }
+                    }
+
+                )
+
+                # RETURN ADMIN WALLET
+                db.admin_wallet.update_one(
+
+                    {},
+
+                    {
+
+                        "$inc": {
+
+                            "total_balance":
+                            old_amount,
+
+                            "total_prize_paid":
+                            -old_amount,
+
+                            "profit":
+                            old_amount
+
+                        },
+
+                        "$set": {
+
+                            "updated_at":
+                            datetime.now(timezone.utc)
+
+                        }
+
                     }
 
                 )
@@ -786,52 +1005,28 @@ async def upload_excel_result(
         })
 
         # =========================
-        # CREATE RESULTS FOLDER
+        # UPLOAD EXCEL TO CLOUDINARY
         # =========================
 
-        os.makedirs(
+        upload_result = cloudinary.uploader.upload(
 
-            "results",
+            excel_file.file,
 
-            exist_ok=True
+            resource_type="raw",
+
+            folder="ff_tournament_results"
 
         )
 
-        # =========================
-        # SAVE TEMP EXCEL
-        # =========================
+        excel_url = upload_result["secure_url"]
 
-        filename = (
-
-            f"temp_{uuid.uuid4()}.{ext}"
-
-        )
-
-        path = f"results/{filename}"
-
-        with open(path, "wb") as buffer:
-
-            shutil.copyfileobj(
-
-                excel_file.file,
-
-                buffer
-
-            )
+        public_id = upload_result["public_id"]
 
         # =========================
         # READ EXCEL
         # =========================
 
-        try:
-
-            df = pd.read_excel(path)
-
-        finally:
-
-            if os.path.exists(path):
-
-                os.remove(path)
+        df = pd.read_excel(excel_url)
 
         # =========================
         # PROCESS PLAYERS
@@ -848,12 +1043,10 @@ async def upload_excel_result(
 
             ).strip()
 
-            # SKIP EMPTY EMAIL
             if not email:
 
                 continue
 
-            # CHECK USER
             user = db.users.find_one({
 
                 "email": email
@@ -918,10 +1111,6 @@ async def upload_excel_result(
 
             )
 
-            # =========================
-            # RESULT
-            # =========================
-
             result = (
 
                 "WON"
@@ -933,7 +1122,7 @@ async def upload_excel_result(
             )
 
             # =========================
-            # UPDATE WALLET
+            # USER WALLET
             # =========================
 
             if win_amount > 0:
@@ -955,37 +1144,40 @@ async def upload_excel_result(
                     }
 
                 )
-            
-            # DEDUCT PRIZE FROM ADMIN WALLET
-            db.admin_wallet.update_one(
 
-                {},
+                # ADMIN WALLET
+                db.admin_wallet.update_one(
 
-                {
+                    {},
 
-                    "$inc": {
+                    {
 
-                        "total_balance": -int(win_amount),
+                        "$inc": {
 
-                        "total_prize_paid": int(win_amount),
+                            "total_balance":
+                            -int(win_amount),
 
-                        "profit": -int(win_amount)
+                            "total_prize_paid":
+                            int(win_amount),
 
-                    },
+                            "profit":
+                            -int(win_amount)
 
-                    "$set": {
+                        },
 
-                        "updated_at":
-                        datetime.now(timezone.utc)
+                        "$set": {
+
+                            "updated_at":
+                            datetime.now(timezone.utc)
+
+                        }
 
                     }
 
-                }
-
-            )
+                )
 
             # =========================
-            # UPDATE WINS
+            # WINS
             # =========================
 
             if result == "WON":
@@ -1058,59 +1250,6 @@ async def upload_excel_result(
 
             })
 
-            # =========================
-            # TRANSACTION
-            # =========================
-
-            if win_amount > 0:
-
-                db.transactions.insert_one({
-
-                    "tournament_id":
-                    tournament_id,
-
-                    "email":
-                    email,
-
-                    "type":
-                    "WINNING",
-
-                    "amount":
-                    win_amount,
-
-                    "status":
-                    "SUCCESS",
-
-                    "message":
-
-                        f"Won ₹{win_amount} "
-                        f"in {tournament.get('title')}",
-
-                    "created_at":
-                    datetime.now(timezone.utc),
-
-                    "expireAt":
-
-                    datetime.now(timezone.utc)
-
-                    + timedelta(days=30)
-
-                })
-            else:
-
-                db.transactions.insert_one({
-
-                    "tournament_id": tournament_id,
-                    "email": email,
-                    "type": "LOSS",
-                    "amount": 0,
-                    "status": "FAILED",
-                    "message": f"Lost match in {tournament.get('title')}",
-                    "created_at": datetime.now(timezone.utc),
-                    "expireAt": datetime.now(timezone.utc) + timedelta(days=30)
-
-                })
-
         # =========================
         # UPDATE TOURNAMENT
         # =========================
@@ -1129,7 +1268,13 @@ async def upload_excel_result(
                     "completed",
 
                     "result_uploaded":
-                    True
+                    True,
+
+                    "result_excel":
+                    excel_url,
+
+                    "result_excel_public_id":
+                    public_id
 
                 }
 
@@ -1153,12 +1298,12 @@ async def upload_excel_result(
 
         }
 
+
 # ==============================
 # UPLOAD RESULT IMAGE
 # ==============================
 
 @app.post("/upload-result-image/{tournament_id}")
-
 async def upload_result_image(
 
     tournament_id: str,
@@ -1171,6 +1316,7 @@ async def upload_result_image(
 
     try:
 
+        # TOURNAMENT
         tournament = db.tournaments.find_one({
 
             "_id":
@@ -1187,46 +1333,43 @@ async def upload_result_image(
 
             }
 
-        os.makedirs(
-            "results",
-            exist_ok=True
-        )
-
+        # =========================
         # DELETE OLD IMAGE
-        old_image = tournament.get(
+        # =========================
 
-            "result_image"
+        old_public_id = tournament.get(
+
+            "result_image_public_id"
 
         )
 
-        if old_image:
+        if old_public_id:
 
-            old_path = old_image.replace("/", "\\")
+            cloudinary.uploader.destroy(
 
-            if os.path.exists(old_path):
-
-                os.remove(old_path)
-
-        # SAVE NEW IMAGE
-        ext = (
-            result_image.filename
-            .split(".")[-1]
-        )
-
-        filename = (
-            f"{tournament_id}.{ext}"
-        )
-
-        path = f"results/{filename}"
-
-        with open(path, "wb") as buffer:
-
-            shutil.copyfileobj(
-
-                result_image.file,
-                buffer
+                old_public_id
 
             )
+
+        # =========================
+        # UPLOAD NEW IMAGE
+        # =========================
+
+        upload_result = cloudinary.uploader.upload(
+
+            result_image.file,
+
+            folder="ff_tournament_results"
+
+        )
+
+        result_image_url = upload_result["secure_url"]
+
+        public_id = upload_result["public_id"]
+
+        # =========================
+        # UPDATE DATABASE
+        # =========================
 
         db.tournaments.update_one(
 
@@ -1239,7 +1382,10 @@ async def upload_result_image(
                 "$set": {
 
                     "result_image":
-                    f"/results/{filename}"
+                    result_image_url,
+
+                    "result_image_public_id":
+                    public_id
 
                 }
 
@@ -1250,7 +1396,10 @@ async def upload_result_image(
         return {
 
             "message":
-            "Result Image Uploaded"
+            "Result Image Uploaded",
+
+            "result_image":
+            result_image_url
 
         }
 
@@ -1337,9 +1486,9 @@ def get_match_history(email: str):
 # Send OTP Email
 def send_otp(email, otp):
 
-    sender = "jenish.thummar82@gmail.com"
+    sender = EMAIL_USER
 
-    password = "abbo zoma bthk dfcs"
+    password = EMAIL_PASS 
 
     msg = MIMEMultipart("alternative")
 
@@ -1796,13 +1945,13 @@ def get_tournaments():
             })
 
         )
+
         match_time = tournament.get("match_time")
 
-        if match_time.tzinfo is None:
-            match_time = match_time.replace(tzinfo=timezone.utc)
-        match_time = match_time.isoformat()
-        
-        print(match_time)
+        if match_time:
+            if match_time.tzinfo is None:
+                match_time = match_time.replace(tzinfo=timezone.utc)
+            match_time = match_time.isoformat()
 
         joined_players_list = []
 
@@ -1843,8 +1992,7 @@ def get_tournaments():
             "joined_players":
             tournament.get("joined_players", 0),
 
-            "match_time":
-            tournament.get("match_time"),
+            "match_time": match_time,
 
             "rules":
             tournament.get("rules", []),
@@ -1892,6 +2040,18 @@ def get_single_tournament(tournament_id: str):
         })
     )
 
+    match_time = tournament.get("match_time")
+
+    if match_time:
+        if match_time.tzinfo is None:
+            match_time = match_time.replace(tzinfo=timezone.utc)
+            
+        # CONVERT TO ISO STRING
+        tournament["match_time"] = (
+            match_time.isoformat()
+        )
+       
+
     joined_players_list = []
 
     for index, player in enumerate(joined_players):
@@ -1933,11 +2093,25 @@ def add_tournament(
 
     match_time = parser.parse(raw_time)
 
-    # force UTC
+    print("Raw Time :- ",raw_time)
+
+    # IST timezone
+    ist = timezone(
+        timedelta(hours=5, minutes=30)
+    )
+
+    # If frontend sends NO timezone
     if match_time.tzinfo is None:
-        match_time = match_time.replace(tzinfo=timezone.utc)
-    else:
-        match_time = match_time.astimezone(timezone.utc)
+
+        # Assume IST
+        match_time = match_time.replace(
+            tzinfo=ist
+        )
+
+    # Convert to UTC for DB storage
+    match_time = match_time.astimezone(
+        timezone.utc
+    )
 
     tournament = {
 
@@ -2004,7 +2178,7 @@ def join_tournament(
 
     try:
 
-        email = data.get("email")
+        email = user_auth["email"]
         tournament_id = data.get("tournament_id")
         ingame_name = data.get("ingame_name", "")
 
@@ -2548,6 +2722,27 @@ def my_tournaments(email: str):
                 tournament["_id"]
             )
 
+            # =========================
+            # FIX MATCH TIME
+            # =========================
+            match_time = tournament.get(
+                "match_time"
+            )
+
+            if match_time:
+
+                # FORCE UTC
+                if match_time.tzinfo is None:
+
+                    match_time = match_time.replace(
+                        tzinfo=timezone.utc
+                    )
+
+                # ISO FORMAT
+                tournament["match_time"] = (
+                    match_time.isoformat()
+                )
+
             tournaments.append(
                 tournament
             )
@@ -2564,28 +2759,49 @@ async def add_cash(
     user_auth = Depends(verify_user)
 
 ):
+    # =========================
+    # TODAY START TIME
+    # =========================
 
+    today_start = datetime.now(
+        timezone.utc
+    ).replace(
+
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    today_count = db.add_cash_requests.count_documents({
+        "email": email,
+        "created_at": {
+            "$gte": today_start
+        }
+    })
+
+    if today_count >= 2:
+        return {
+            "error": "Daily limit reached (2/2 used today)"
+        }
     try:
 
-        os.makedirs(
-            "payment_screenshots",
-            exist_ok=True
+        contents = await screenshot.read()
+
+        if len(contents) > 2 * 1024 * 1024:
+            return {"error": "File must be less than 2MB"}
+
+        await screenshot.seek(0)
+
+        upload_result = cloudinary.uploader.upload(
+
+            screenshot.file,
+
+            folder="payment_screenshots"
+
         )
 
-        unique_filename = (
-            f"{uuid.uuid4()}_{screenshot.filename}"
-        )
-
-        file_path = (
-            f"payment_screenshots/{unique_filename}"
-        )
-
-        with open(file_path, "wb") as buffer:
-
-            shutil.copyfileobj(
-                screenshot.file,
-                buffer
-            )
+        file_path = upload_result["secure_url"]
 
         request_id = db.add_cash_requests.insert_one({
 
@@ -2593,6 +2809,9 @@ async def add_cash(
             "amount": amount,
             "screenshot": file_path,
             "status": "pending",
+            "transaction_id": "",
+            "payment_date": "",
+            "payment_status": "pending",
             "reason": "",
             "created_at": datetime.now(timezone.utc)
 
@@ -2616,7 +2835,7 @@ async def add_cash(
         return {
 
             "message":
-            "Payment Request Submitted"
+            f"Request submitted successfully ({today_count + 1}/2 used today)"
 
         }
 
@@ -2685,48 +2904,58 @@ def get_add_cash_requests(
 # EDIT ADD CASH
 @app.post("/edit-add-cash/{id}")
 async def edit_add_cash(
-
     id: str,
-
-    data: dict,
-
+    transaction_id: str = Form(...),
+    amount: int = Form(...),
+    payment_date: str = Form(...),
+    payment_status: str = Form(...),
     admin = Depends(verify_admin)
-
 ):
 
+    obj_id = ObjectId(id)
+
+    request = db.add_cash_requests.find_one({"_id": obj_id})
+    if not request:
+        return {"error": "Request not found"}
+
+    # =========================
+    # DUPLICATE CHECK LOGIC (IMPORTANT FIX)
+    # =========================
+    existing = db.add_cash_requests.find_one({
+        "transaction_id": transaction_id,
+        "_id": {"$ne": obj_id}
+    })
+
+    # ❌ BLOCK ONLY IF NOT RETRY
+    if existing and request.get("payment_status") != "retry":
+        return {"error": "Transaction ID already exists"}
+
+    # =========================
+    # UPDATE REQUEST
+    # =========================
     db.add_cash_requests.update_one(
-
-        {
-            "_id":
-            ObjectId(id)
-        },
-
-        {
-            "$set": {
-
-                "transaction_id":
-                data.get("transaction_id"),
-
-                "ocr_amount":
-                data.get("ocr_amount"),
-
-                "payment_date":
-                data.get("payment_date"),
-
-                "payment_status":
-                data.get("payment_status")
-
-            }
-        }
-
+        {"_id": obj_id},
+        {"$set": {
+            "transaction_id": transaction_id,
+            "amount": amount,
+            "payment_date": payment_date,
+            "payment_status": payment_status
+        }}
     )
 
-    return {
+    # =========================
+    # UPDATE TRANSACTION TABLE
+    # =========================
+    db.transactions.update_one(
+        {"request_id": obj_id},
+        {"$set": {
+            "transaction_id": transaction_id,
+            "amount": amount
+        }},
+        upsert=True
+    )
 
-        "message":
-        "Request updated successfully"
-
-    }
+    return {"message": "Request updated successfully"}   
 
 # Approve add
 @app.post("/approve-add-cash/{id}")
@@ -2971,7 +3200,6 @@ async def withdraw_request(
         minute=0,
         second=0,
         microsecond=0
-
     )
 
     # =========================
@@ -3885,7 +4113,8 @@ def upcoming_live_matches(
 
 ):
 
-    now = datetime.now()
+     # UTC NOW
+    now = datetime.now(timezone.utc)
 
     next_30_min = now + timedelta(minutes=30)
 
@@ -3901,38 +4130,14 @@ def upcoming_live_matches(
 
         try:
 
-            raw_time = tournament.get("match_time")
+            match_time = tournament.get("match_time")
 
-            # =========================
-            # HANDLE DATETIME
-            # =========================
-
-            if isinstance(raw_time, datetime):
-
-                match_time = raw_time
-
-                display_time = raw_time.strftime(
-
-                    "%d %b %Y, %I:%M %p"
-
+            # force UTC if missing timezone
+            if match_time.tzinfo is None:
+                match_time = match_time.replace(
+                    tzinfo=timezone.utc
                 )
-
-            # =========================
-            # HANDLE STRING
-            # =========================
-
-            else:
-
-                match_time = datetime.strptime(
-
-                    raw_time,
-
-                    "%d %b %Y, %I:%M %p"
-
-                )
-
-                display_time = raw_time
-
+            
             # =========================
             # NEXT 30 MIN CHECK
             # =========================
@@ -3951,7 +4156,7 @@ def upcoming_live_matches(
                     tournament.get("game_mode"),
 
                     "match_time":
-                    display_time,
+                    match_time.isoformat(),
 
                     "sort_time":
                     match_time,
