@@ -31,6 +31,7 @@ export default function Register() {
   // SEND OTP
   const handleRegister = async (e) => {
 
+    e.preventDefault();
     const formData = new FormData();
 
     formData.append("name", name);
@@ -41,11 +42,9 @@ export default function Register() {
     formData.append(
       "profile_pic",
       profilePic
-    );
+    );    
 
-    e.preventDefault();
-
-    if (!name || !mobile || !email || !password) {
+    if (!name || !mobile || !email || !password || !profilePic) {
 
       errorToast("Please fill all fields");
 
@@ -197,22 +196,20 @@ export default function Register() {
   };
 
   useEffect(() => {
+  if (!showOtpBox) return;
 
-  let interval;
-
-  if (showOtpBox && otpTimer > 0) {
-
-    interval = setInterval(() => {
-
-      setOtpTimer((prev) => prev - 1);
-
-    }, 1000);
-
-  }
+  const interval = setInterval(() => {
+    setOtpTimer((prev) => {
+      if (prev <= 1) {
+        clearInterval(interval);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
 
   return () => clearInterval(interval);
-
-}, [showOtpBox, otpTimer]);
+}, [showOtpBox]);
 
   return (
 
