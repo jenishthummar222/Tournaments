@@ -54,10 +54,21 @@ export default function Register() {
     formData.append("email", email);
     formData.append("password", password);
 
-    formData.append(
-      "profile_pic",
-      profilePic
-    );    
+    if (profilePic) {
+
+      formData.append(
+        "profile_pic",
+        profilePic
+      );
+
+    } else {
+
+      formData.append(
+        "default_profile",
+        randomAvatar
+      );
+
+    }   
 
     if (!name || !mobile || !email || !password) {
 

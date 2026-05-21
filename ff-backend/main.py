@@ -1575,7 +1575,8 @@ async def send_register_otp(
 
     password: str = Form(...),
 
-    profile_pic: UploadFile = File(...)
+    profile_pic: UploadFile = File(None),
+    default_profile: str = Form(None)
 
 ):
     try:
@@ -1592,16 +1593,18 @@ async def send_register_otp(
             }
 
         
-        upload_result = cloudinary.uploader.upload(
+        if profile_pic:
 
-            profile_pic.file,
+            upload_result = cloudinary.uploader.upload(
+                profile_pic.file,
+                folder="ff_tournament_profiles"
+            )
 
-            folder="ff_tournament_profiles"
+            profile_url = upload_result["secure_url"]
 
-        )
-        
-        # IMAGE URL
-        profile_url = upload_result["secure_url"]
+        else:
+
+            profile_url = default_profile
 
         otp = str(
 

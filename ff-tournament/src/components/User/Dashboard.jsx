@@ -2108,7 +2108,8 @@ const Dashboard = () => {
 
                 <input
                   type="number"
-                  placeholder="Enter Amount"
+                  min="20"
+                  placeholder="Enter Minimum amount is ₹20"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full mb-5 rounded-2xl bg-black/40 border border-green-500/20 p-4 text-white outline-none"
