@@ -2111,7 +2111,18 @@ const Dashboard = () => {
                   min="20"
                   placeholder="Enter Minimum amount is ₹20"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+
+                    const value = e.target.value;
+
+                    // BLOCK BELOW 20
+                    if (value === "" || Number(value) >= 20) {
+
+                      setAmount(value);
+
+                    }
+
+                  }}
                   className="w-full mb-5 rounded-2xl bg-black/40 border border-green-500/20 p-4 text-white outline-none"
                 />
 
