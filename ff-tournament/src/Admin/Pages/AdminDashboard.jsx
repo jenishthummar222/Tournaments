@@ -268,7 +268,7 @@ const AdminDashboard = () => {
 
               <div className="flex items-center justify-between mb-5">
 
-                <Icon className="text-yellow-400 w-10 h-10" />
+                <Icon className="text-yellow-600 w-10 h-10" />
 
                 <Gamepad2 className="text-red-400 w-6 h-6 animate-pulse" />
 

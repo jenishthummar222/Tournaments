@@ -85,6 +85,8 @@ const Dashboard = () => {
 
   const [newName, setNewName] = useState(user?.name || "");
 
+  const [joining, setJoining] = useState(false);
+
 
   const updateWallet = async () => {
     try {
@@ -1488,6 +1490,7 @@ const Dashboard = () => {
 
                 //MATCH COMPLETED 
                 const isCompleted = status === "COMPLETED";
+                
 
                 return (
 
@@ -1556,8 +1559,10 @@ const Dashboard = () => {
                         <p>
                           👥 Players:
                           <span className="ml-2 text-white">
-                           {Number(tournament?.joined_players) || 0}/
-                            {Number(tournament?.players) || 0}
+                             {Number(tournament.joined_players) || 0}
+                              /
+                              {Number(tournament.players) || 0}
+
                           </span>
                         </p>
 
@@ -1802,6 +1807,11 @@ const Dashboard = () => {
             selectedTournament.title
               .toLowerCase()
                 .includes("solo");
+          
+            const playersCount =
+            selectedTournament.joined_players_list?.length ??
+            selectedTournament.joined_players ??
+            0;
                     
           return (
 
@@ -1923,7 +1933,7 @@ const Dashboard = () => {
                       <p>
                         👥 Players:
                         <span className="ml-2 text-white">
-                          {selectedTournament.joined_players || 0}/{selectedTournament.players}
+                          {playersCount}/{selectedTournament.players}
                         </span>
                       </p>
 
@@ -2049,22 +2059,62 @@ const Dashboard = () => {
 
                       </div>
 
+                      
                       <button
-                        disabled={!teamData.trim()}
-                        onClick={() => {
+                        disabled={!teamData.trim() || joining}
+                        onClick={async () => {
+
+                          if (joining) return;
+
                           if (!teamData.trim()) {
                             errorToast("Enter name first");
                             return;
                           }
-                          joinTournament(selectedTournament._id);
+
+                          try {
+
+                            setJoining(true);
+
+                            await joinTournament(selectedTournament._id);
+
+                          } finally {
+
+                            setJoining(false);
+
+                          }
+
                         }}
-                        className={`w-full py-4 rounded-2xl font-black text-lg transition-all duration-300 
-                          ${teamData.trim()
-                            ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:scale-105 text-white"
-                            : "bg-gray-600 text-gray-300 cursor-not-allowed"
-                          }`}
+
+                        className={`w-full py-4 rounded-2xl font-black text-lg transition-all duration-300
+
+                          ${
+                            joining
+                              ? "bg-gray-700 text-gray-300 cursor-not-allowed"
+
+                            : teamData.trim()
+                              ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:scale-105 text-white"
+
+                              : "bg-gray-600 text-gray-300 cursor-not-allowed"
+                          }
+                        `}
                       >
-                        JOIN TOURNAMENT
+
+                        {joining ? (
+
+                          <div className="flex items-center justify-center gap-3">
+
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+
+                            JOINING...
+
+                          </div>
+
+                        ) : (
+
+                          "JOIN TOURNAMENT"
+
+                        )}
+
                       </button>
                     </>
 
