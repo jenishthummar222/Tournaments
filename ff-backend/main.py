@@ -23,7 +23,6 @@ from auth.jwt_handler import SECRET_KEY
 from threading import Thread
 import time
 from database import db
-from pymongo import MongoClient
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime,timedelta,timezone
@@ -35,13 +34,13 @@ import smtplib
 import cloudinary
 import cloudinary.uploader
 import os
-import shutil
 import pandas as pd
-import uuid
+import requests
+
 
 #email
 EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASS")
+EMAIL_PASS = os.getenv("EMAIL_API")
 
 #reader = easyocr.Reader(['en'])
 
@@ -1487,16 +1486,14 @@ def get_match_history(email: str):
 # Send OTP Email
 def send_otp(email, otp):
 
-    sender = EMAIL_USER
+    name = "JK Tournaments"
+    url = "https://api.brevo.com/v3/smtp/email"
 
-    password = EMAIL_PASS 
-
-    msg = MIMEMultipart("alternative")
-
-    msg["Subject"] = (
-        "🔥 FF Arena - Secure Verification Code"
-    )
-
+    headers = {
+        "api-key": EMAIL_PASS,
+        "Content-Type": "application/json"
+    }
+    
     html = f"""
         <html>
         <body style="background-color:#0f0f0f;color:white;font-family:Arial;">
@@ -1537,27 +1534,33 @@ def send_otp(email, otp):
         </body>
         </html>
         """
-    msg.attach(MIMEText(html, "html"))
+   
+    data = {
+        "sender": {
+            "name": name,
+            "email": EMAIL_USER
+        },
+        "to": [
+            {
+                "email": email
+            }
+        ],
+        "subject": "🔥 FF Arena - Secure Verification Code",
+        "htmlContent": html
+    }
 
-    msg["From"] = sender
+    try:
+        response = requests.post(url, json=data, headers=headers)
 
-    msg["To"] = email
+        print("Brevo Response:", response.status_code)
+        print(response.text)
 
-    server = smtplib.SMTP(
-        "smtp.gmail.com",
-        587
-    )
+        return response.json()
+        
+    except Exception as e:
+        print("Email send error:", e)
+        return {"error": str(e)}
 
-    server.starttls()
-
-    server.login(
-        sender,
-        password
-    )
-
-    server.send_message(msg)
-
-    server.quit()
 
 # STEP 1
 # SEND OTP

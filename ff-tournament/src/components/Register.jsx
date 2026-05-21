@@ -51,6 +51,16 @@ export default function Register() {
       return;
     }
 
+    if (mobile.length !== 10) {
+      alert("Mobile number must be 10 digits");
+      return;
+    }
+    
+    if (!/^[0-9]{10}$/.test(mobile)) {
+      alert("Enter valid 10-digit mobile number");
+      return;
+    }
+
     if (password.length < 6) {
 
       errorToast("Password must be 6+ characters");
@@ -322,14 +332,11 @@ export default function Register() {
             placeholder="Enter Mobile Number"
             value={mobile}
             onChange={(e) => {
-
-              const value = e.target.value
-                .replace(/\D/g, "")
-                .slice(0, 10);
-
+              const value = e.target.value.replace(/\D/g, "").slice(0, 10);
               setMobile(value);
-
             }}
+            maxLength={10}
+            minLength={10}
             className="w-full px-5 py-4 rounded-r-2xl bg-black/40 border border-gray-700 outline-none focus:border-yellow-400 transition-all"
             inputMode="numeric"
           />
