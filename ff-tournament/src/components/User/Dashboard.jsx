@@ -2111,20 +2111,37 @@ const Dashboard = () => {
                   min="20"
                   placeholder="Enter Minimum amount is ₹20"
                   value={amount}
-                  onChange={(e) => {
+                  onChange={(e) => setAmount(e.target.value)}
+                  className={`
 
-                    const value = e.target.value;
+                    w-full
+                    mb-2
+                    rounded-2xl
+                    bg-black/40
+                    p-4
+                    text-white
+                    outline-none
 
-                    // BLOCK BELOW 20
-                    if (value === "" || Number(value) >= 20) {
+                    ${amount && Number(amount) < 20
 
-                      setAmount(value);
+                      ? "border border-red-500"
+
+                      : "border border-green-500/20"
 
                     }
 
-                  }}
-                  className="w-full mb-5 rounded-2xl bg-black/40 border border-green-500/20 p-4 text-white outline-none"
+                  `}
                 />
+                {/* ERROR */}
+                {amount && Number(amount) < 20 && (
+
+                  <p className="text-red-400 text-sm mb-4">
+
+                    Minimum amount is ₹20
+
+                  </p>
+
+                )}
 
                 <img
                   src="https://res.cloudinary.com/drrxe4qzt/image/upload/v1779270119/upi-qr_z70r4m.jpg"
