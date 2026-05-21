@@ -47,8 +47,6 @@ const Dashboard = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-  
   const [selectedMode, setSelectedMode] = useState("All");
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -86,6 +84,8 @@ const Dashboard = () => {
   const [newName, setNewName] = useState(user?.name || "");
 
   const [joining, setJoining] = useState(false);
+
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
 
   const updateWallet = async () => {
@@ -510,9 +510,7 @@ const Dashboard = () => {
 
     }
 
-  };
-  
-  
+  }; 
 
   // for time
   useEffect(() => {
@@ -611,6 +609,15 @@ const Dashboard = () => {
 
     try {
 
+      const tournament = allMatches.find(
+        (t) => t._id === tournamentId
+      );
+
+      const isSolo =
+      tournament?.title
+        ?.toLowerCase()
+        .includes("solo");
+
       const user = JSON.parse(
         localStorage.getItem("user")
       );
@@ -635,7 +642,19 @@ const Dashboard = () => {
 
             tournament_id: tournamentId,
 
-            ingame_name: teamData
+            ingame_name: isSolo
+              ? teamData
+              : "",
+
+            team_name: isSolo
+              ? ""
+              : teamData.team_name,
+
+            members: isSolo
+              ? []
+              : teamData.members.filter(
+                  m => m?.trim() !== ""
+                )
 
           }),
         }
@@ -1732,6 +1751,28 @@ const Dashboard = () => {
 
                               setSelectedTournament(tournament);
 
+                              const isSolo =
+                                tournament.title
+                                  .toLowerCase()
+                                  .includes("solo");
+
+                              // SOLO
+                              if (isSolo) {
+
+                                setTeamData("");
+
+                              }
+
+                              // TEAM
+                              else {
+
+                                setTeamData({
+                                  team_name: "",
+                                  members: ["", "", "", "", ""]
+                                });
+
+                              }
+
                               setShowModal(true);
 
                             }}
@@ -1834,30 +1875,187 @@ const Dashboard = () => {
 
                 </h2>
 
-                
                 {/* PLAYER SLOT SECTION */}
-                {!isCompleted && joined &&(
+                {!isCompleted && joined && (
 
-                  <div className="mb-6 rounded-3xl border border-green-500/20 bg-green-500/5 p-5">
+                  <div className="mb-6 rounded-[30px] border border-green-500/20 bg-gradient-to-br from-green-500/5 to-cyan-500/5 p-6">
 
-                    <h2 className="text-2xl font-black text-green-400 mb-5">
-                      PLAYER SLOTS
-                    </h2>
+                    {/* HEADER */}
+                    <div className="flex items-center justify-between mb-6">
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <h2 className="text-3xl font-black text-green-400">
+                        PLAYER SLOTS
+                      </h2>
 
-                      {Array.from({ length: totalSlots }, (_, i) => { const slotNumber = i + 1; const player = playersList.find( (p) => p.slot === slotNumber ); return (
-
-                          <div key={slotNumber} className={` p-4 rounded-2xl border text-center ${player ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-gray-700" } `} >
-
-                            <div className="text-sm text-gray-400"> Slot #{slotNumber} </div> {player ? ( <div className="text-green-400 font-bold mt-2"> {player.name} </div> ): (
-
-                              <div className="text-gray-500 mt-2"> Empty </div> )} </div> ); })}
+                      <div className="px-4 py-2 rounded-2xl bg-black/40 border border-green-500/20 text-green-300 font-bold text-sm">
+                        {playersList.length}/{totalSlots} Filled
+                      </div>
 
                     </div>
 
-                    <div className="mt-4 text-gray-400 text-sm">
-                      {playersList.length}/{totalSlots} slots filled
+                    {/* GRID */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+                      {Array.from({ length: totalSlots }, (_, i) => {
+
+                        const slotNumber = i + 1;
+
+                        const player = playersList.find(
+                          (p) => p.slot === slotNumber
+                        );
+
+                        const hasMembers =
+                          player?.members?.length > 0;
+
+                        return (
+
+                          <div
+                            key={slotNumber}
+
+                            onClick={() => {
+
+                              // ONLY TEAM MATCH CLICKABLE
+                              if (!isSolo && player) {
+
+                                setSelectedPlayer(player);
+
+                              }
+
+                            }}
+
+                            className={`
+                              relative overflow-hidden
+                              rounded-3xl border p-4 transition-all duration-300
+
+                              ${player
+                                ? "bg-green-500/10 border-green-500/30 hover:scale-105"
+                                : "bg-black/30 border-gray-700"
+                              }
+
+                              ${!isSolo && player
+                                ? "cursor-pointer hover:border-cyan-400"
+                                : "cursor-default"
+                              }
+                            `}
+                          >
+
+                            {/* SLOT NUMBER */}
+                            <div className="absolute top-2 right-2 text-xs text-gray-500 font-bold">
+                              #{slotNumber}
+                            </div>
+
+                            {/* PLAYER */}
+                            {player ? (
+
+                              <>
+
+                                {/* ICON */}
+                                <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-r from-green-400 to-cyan-400 flex items-center justify-center text-black font-black text-xl mb-3">
+
+                                  {player.team_name
+                                    ? "👥"
+                                    : "🎮"
+                                  }
+
+                                </div>
+
+                                {/* NAME */}
+                                <div className="text-center">
+
+                                  <h3 className="text-white font-black text-sm break-words">
+
+                                    {player.team_name || player.name}
+
+                                  </h3>
+
+                                  {/* TEAM INFO */}
+                                  {!isSolo && hasMembers && (
+
+                                    <p className="text-cyan-300 text-xs mt-2">
+                                      view members
+                                    </p>
+
+                                  )}
+
+                                </div>
+
+                              </>
+
+                            ) : (
+
+                              <div className="py-6 text-center">
+
+                                <div className="text-3xl mb-2 opacity-40">
+                                  🎯
+                                </div>
+
+                                <p className="text-gray-500 text-sm">
+                                  Empty Slot
+                                </p>
+
+                              </div>
+
+                            )}
+
+                          </div>
+
+                        );
+
+                      })}
+
+                    </div>
+
+                  </div>
+                )}
+                                
+                {/* TEAM MEMBERS POPUP */}
+                {selectedPlayer && !isSolo && (
+
+                  <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+
+                    <div className="w-full max-w-md rounded-[30px] bg-gray-900 border border-cyan-500/20 p-6 relative">
+
+                      {/* CLOSE */}
+                      <button
+                        onClick={() => setSelectedPlayer(null)}
+                        className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-400"
+                      >
+                        ×
+                      </button>
+
+                      {/* TITLE */}
+                      <h2 className="text-3xl font-black text-cyan-400 mb-6 text-center">
+
+                        {selectedPlayer.team_name}
+
+                      </h2>
+
+                      {/* MEMBERS */}
+                      <div className="space-y-3">
+
+                        {selectedPlayer.members?.map((member, index) => (
+
+                          <div
+                            key={index}
+                            className="flex items-center gap-4 rounded-2xl bg-black/40 border border-cyan-500/20 p-4"
+                          >
+
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-black">
+
+                              {index + 1}
+
+                            </div>
+
+                            <div className="text-white font-bold">
+                              {member}
+                            </div>
+
+                          </div>
+
+                        ))}
+
+                      </div>
+
                     </div>
 
                   </div>
@@ -2032,52 +2230,211 @@ const Dashboard = () => {
 
                   ) : canJoin ? (
                     <>
-                      <div className="mb-5">
+                      <div className="mb-6">
 
-                          <label className="block text-gray-300 mb-2 font-bold">
+                        <label className="block text-gray-300 mb-3 font-bold text-lg">
 
-                            {isSolo
-                              ? "Enter In Game Name"
-                              : "Enter Team Name"}
+                          {isSolo
+                            ? "Enter In Game Name"
+                            : "Enter Team Details"}
 
-                          </label>
+                        </label>
+
+                        {/* SOLO MODE */}
+                        {isSolo ? (
 
                           <input
                             required
                             type="text"
-                            value={teamData}
-                            onChange={(e) =>
-                              setTeamData(e.target.value)
-                            }
-                            placeholder={
-                              isSolo
-                                ? "Enter IGN"
-                                : "Enter Team Name"
-                            }
-                            className="w-full rounded-2xl bg-black/40 border border-purple-500/20 p-4 text-white outline-none"
+                            value={typeof teamData === "string" ? teamData : ""}
+                            onChange={(e) => setTeamData(e.target.value)}
+                            placeholder="Enter Your IGN"
+                            className="
+                              w-full
+                              rounded-2xl
+                              bg-black/40
+                              border border-purple-500/30
+                              p-4
+                              text-white
+                              outline-none
+                              focus:border-pink-500
+                              transition-all
+                            "
                           />
 
-                      </div>
+                        ) : (
 
-                      
+                          <div className="space-y-5">
+
+                            {/* TEAM NAME */}
+                            <div>
+
+                              <p className="text-sm text-gray-400 mb-2">
+                                TEAM NAME
+                              </p>
+
+                              <input
+                                required
+                                type="text"
+                                value={teamData?.team_name || ""}
+                                onChange={(e) =>
+                                  setTeamData({
+                                    ...teamData,
+                                    team_name: e.target.value
+                                  })
+                                }
+                                placeholder="Enter Team Name"
+                                className="
+                                  w-full
+                                  rounded-2xl
+                                  bg-black/40
+                                  border border-cyan-500/30
+                                  p-4
+                                  text-white
+                                  outline-none
+                                  focus:border-cyan-400
+                                  transition-all
+                                "
+                              />
+
+                            </div>
+
+                            {/* MEMBERS SHOW ONLY AFTER TEAM NAME */}
+                            {teamData?.team_name?.trim() && (
+
+                              <div className="space-y-3">
+
+                                <p className="text-sm text-gray-400">
+                                  TEAM MEMBERS
+                                </p>
+
+                                {(teamData?.members || []).map((member, index) => (
+
+                                  <div
+                                    key={index}
+                                    className="
+                                      flex items-center gap-3
+                                      bg-black/30
+                                      border border-purple-500/20
+                                      rounded-2xl
+                                      px-4 py-3
+                                    "
+                                  >
+
+                                    {/* NUMBER */}
+                                    <div className="
+                                      w-9 h-9
+                                      rounded-full
+                                      bg-gradient-to-r
+                                      from-purple-500
+                                      to-pink-500
+                                      flex items-center justify-center
+                                      text-white font-bold
+                                    ">
+                                      {index + 1}
+                                    </div>
+
+                                    {/* INPUT */}
+                                    <input
+                                      type="text"
+                                      value={member}
+                                      onChange={(e) => {
+
+                                        const updatedMembers = [
+                                          ...teamData.members
+                                        ];
+
+                                        updatedMembers[index] = e.target.value;
+
+                                        setTeamData({
+                                          ...teamData,
+                                          members: updatedMembers
+                                        });
+
+                                      }}
+                                      placeholder={`Player ${index + 1} Name`}
+                                      className="
+                                        flex-1
+                                        bg-transparent
+                                        outline-none
+                                        text-white
+                                        placeholder-gray-500
+                                      "
+                                    />
+
+                                  </div>
+
+                                ))}
+
+                              </div>
+
+                            )}
+
+                          </div>
+
+                        )}
+
+                      </div>
+                        
                       <button
-                        disabled={!teamData.trim() || joining}
+
+                        disabled={
+
+                          joining ||
+
+                          (
+
+                            isSolo
+
+                              ? !teamData?.trim()
+
+                              : !teamData?.team_name?.trim()
+
+                          )
+
+                        }
+
                         onClick={async () => {
 
                           if (joining) return;
 
-                          if (!teamData.trim()) {
-                            errorToast("Enter name first");
-                            return;
+                          // SOLO VALIDATION
+                          if (isSolo) {
+
+                            if (!teamData?.trim()) {
+
+                              errorToast("Enter IGN");
+
+                              return;
+
+                            }
+
+                          }
+
+                          // TEAM VALIDATION
+                          else {
+
+                            if (!teamData?.team_name?.trim()) {
+
+                              errorToast("Enter Team Name");
+
+                              return;
+
+                            }
+
                           }
 
                           try {
 
                             setJoining(true);
 
-                            await joinTournament(selectedTournament._id);
+                            await joinTournament(
+                              selectedTournament._id
+                            );
 
-                          } finally {
+                          }
+
+                          finally {
 
                             setJoining(false);
 
@@ -2085,17 +2442,38 @@ const Dashboard = () => {
 
                         }}
 
-                        className={`w-full py-4 rounded-2xl font-black text-lg transition-all duration-300
+                        className={`
+
+                          w-full
+                          py-4
+                          rounded-2xl
+                          font-black
+                          text-lg
+                          transition-all
+                          duration-300
 
                           ${
+
                             joining
+
                               ? "bg-gray-700 text-gray-300 cursor-not-allowed"
 
-                            : teamData.trim()
-                              ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:scale-105 text-white"
+                              : (
 
-                              : "bg-gray-600 text-gray-300 cursor-not-allowed"
+                                  isSolo
+
+                                    ? teamData?.trim()
+
+                                    : teamData?.team_name?.trim()
+
+                                )
+
+                                ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:scale-105 text-white"
+
+                                : "bg-gray-600 text-gray-300 cursor-not-allowed"
+
                           }
+
                         `}
                       >
 
@@ -2103,7 +2481,14 @@ const Dashboard = () => {
 
                           <div className="flex items-center justify-center gap-3">
 
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="
+                              w-5 h-5
+                              border-2
+                              border-white
+                              border-t-transparent
+                              rounded-full
+                              animate-spin
+                            " />
 
                             JOINING...
 
