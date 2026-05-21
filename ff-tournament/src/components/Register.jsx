@@ -27,6 +27,21 @@ export default function Register() {
 
   const [showTerms, setShowTerms] = useState(false);
 
+  const DEFAULT_PIC = [
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779339168/8300_8_03_gk4jr1.jpg",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779339808/Ag1_09_z7vazt.jpg",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779340973/Screenshot_2026-05-21_103017_ly6tts.png",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779340974/Screenshot_2026-05-21_102927_kg1myy.png",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779340974/Screenshot_2026-05-21_103111_cng06y.png",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779340974/Screenshot_2026-05-21_103045_vzaalj.png",
+    "https://res.cloudinary.com/drrxe4qzt/image/upload/v1779340974/Screenshot_2026-05-21_102945_kuaakk.png"
+  ];
+
+  const [randomAvatar] = useState(() => {
+    const index = Math.floor(Math.random() * DEFAULT_PIC.length);
+    return DEFAULT_PIC[index];
+  });
+
   // STEP 1
   // SEND OTP
   const handleRegister = async (e) => {
@@ -44,7 +59,7 @@ export default function Register() {
       profilePic
     );    
 
-    if (!name || !mobile || !email || !password || !profilePic) {
+    if (!name || !mobile || !email || !password) {
 
       errorToast("Please fill all fields");
 
@@ -259,47 +274,45 @@ export default function Register() {
         {/* Profile Pic */}
         <div className="flex flex-col items-center mb-6">
 
-          <label className="relative cursor-pointer">
+          <label className="relative cursor-pointer group">
 
             <input
               type="file"
               accept="image/*"
               hidden
               onChange={(e) => {
+                const file = e.target.files?.[0];
 
-                const file = e.target.files[0];
-
-                  if (file) {
-
-                    setProfilePic(file);
-
-                    setPreview(
-                      URL.createObjectURL(file)
-                    );
-
-                  }
+                if (file) {
+                  setProfilePic(file);
+                  setPreview(URL.createObjectURL(file));
+                } else {
+                  setProfilePic(null);
+                  setPreview(null);
+                }
               }}
             />
 
-            <div className="w-28 h-28 rounded-full border-4 border-yellow-400 overflow-hidden bg-black/40 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.25)]">
+            <div className="w-28 h-28 rounded-full border-4 border-yellow-400 overflow-hidden bg-black/40 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.25)] relative">
 
-              {profilePic ? (
+              {/* DEFAULT IMAGE */}
+              <img
+                src={
+                  preview ||
+                  randomAvatar
+                }
+                alt="profile"
+                className="w-full h-full object-cover"
+              />
 
-                <img
-                  src={preview}
-                  alt="profile"
-                  className="w-full h-full object-cover"
-                />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
 
-              ) : (
-
-                <span className="text-gray-400 text-sm text-center px-2">
-                  Upload
-                  <br />
-                  Profile
+                <span className="text-white text-xs font-semibold">
+                  {preview ? "Change" : "Upload"}
                 </span>
 
-              )}
+              </div>
 
             </div>
 
