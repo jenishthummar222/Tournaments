@@ -18,6 +18,8 @@ import {
   errorToast,
 } from "../../Utils/showToast";
 
+import { apiFetch } from "../../Utils/api";
+
 const Dashboard = () => {
 
   const gameModes = [
@@ -92,11 +94,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/wallet`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await apiFetch(`${import.meta.env.VITE_API_URL}/wallet`);          
 
       const data = await res.json();
 
@@ -606,6 +604,10 @@ const Dashboard = () => {
   const joinTournament = async (
     tournamentId
   ) => {
+
+    if (joining) return;
+
+    setJoining(true);
 
     try {
 
@@ -2943,7 +2945,6 @@ const Dashboard = () => {
                 hover:scale-105
                 transition-all
                 "
-
               >
 
                 WhatsApp Support
@@ -2964,7 +2965,6 @@ const Dashboard = () => {
               inline-block
               font-bold
               "
-
             >
 
               Email Support
