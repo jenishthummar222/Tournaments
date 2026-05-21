@@ -616,10 +616,13 @@ def export_players(
 
                 "Game Name":
                 str(
-                    player.get(
-                        "ingame_name",
-                        ""
-                    )
+
+                    player.get("ingame_name")
+
+                    or player.get("team_name")
+
+                    or ""
+
                 ),
 
                 "Email":
@@ -627,6 +630,14 @@ def export_players(
                     player.get(
                         "email",
                         ""
+                    )
+                ),
+
+                "Members":
+                ", ".join(
+                    player.get(
+                        "members",
+                        []
                     )
                 ),
 
@@ -1933,14 +1944,9 @@ def get_tournaments():
         )
 
         joined_players = list(
-
             db.joined.find({
-
-                "tournament_id":
-                tournament_id
-
-            })
-
+                "tournament_id": tournament_id
+            }).sort("slot", 1)
         )
 
         match_time = tournament.get("match_time")
@@ -1956,16 +1962,29 @@ def get_tournaments():
 
             joined_players_list.append({
 
-                "slot": index + 1,
+                "slot": player.get("slot", index + 1),
 
                 "name":
+
+                    player.get("ingame_name")
+
+                    or player.get("team_name")
+
+                    or "Unknown",
+
+                "team_name":
                 player.get(
-                    "ingame_name",
-                    "Unknown"
+                    "team_name",
+                    ""
+                ),
+
+                "members":
+                player.get(
+                    "members",
+                    []
                 )
 
             })
-
         data.append({
 
             "_id":
@@ -2034,7 +2053,7 @@ def get_single_tournament(tournament_id: str):
     joined_players = list(
         db.joined.find({
             "tournament_id": tournament_id
-        })
+        }).sort("slot", 1)
     )
 
     match_time = tournament.get("match_time")
@@ -2055,14 +2074,29 @@ def get_single_tournament(tournament_id: str):
 
         joined_players_list.append({
 
-            "slot": index + 1,
+                "slot": player.get("slot", index + 1),
 
-            "name": player.get(
-                "ingame_name",
-                "Unknown"
-            )
+                "name":
 
-        })
+                    player.get("ingame_name")
+
+                    or player.get("team_name")
+
+                    or "Unknown",
+
+                "team_name":
+                player.get(
+                    "team_name",
+                    ""
+                ),
+
+                "members":
+                player.get(
+                    "members",
+                    []
+                )
+
+            })
 
     tournament["joined_players_list"] = joined_players_list
 
@@ -2176,10 +2210,19 @@ def join_tournament(
     try:
 
         email = user_auth["email"]
+
         tournament_id = data.get("tournament_id")
+
         ingame_name = data.get("ingame_name", "")
 
+        team_name = data.get("team_name", "")
+
+        members = data.get("members", [])
+
+        # =========================
         # CHECK OBJECT ID
+        # =========================
+
         try:
 
             tournament_object_id = ObjectId(
@@ -2193,7 +2236,10 @@ def join_tournament(
                 "Invalid Tournament ID"
             }
 
+        # =========================
         # USER
+        # =========================
+
         user = db.users.find_one({
 
             "email": email
@@ -2209,7 +2255,10 @@ def join_tournament(
 
             }
 
+        # =========================
         # TOURNAMENT
+        # =========================
+
         tournament = db.tournaments.find_one({
 
             "_id":
@@ -2226,10 +2275,9 @@ def join_tournament(
 
             }
 
+        # =========================
         # SAFE VALUES
-        wallet = int(
-            user.get("wallet", 0)
-        )
+        # =========================
 
         entry_fee = int(
             tournament.get("entry_fee", 0)
@@ -2243,8 +2291,17 @@ def join_tournament(
             tournament.get("players", 0)
         )
 
-        
+        title = tournament.get(
+            "title",
+            ""
+        ).lower()
+
+        is_solo = "solo" in title              
+
+        # =========================
         # ALREADY JOINED
+        # =========================
+
         already = db.joined.find_one({
 
             "email": email,
@@ -2263,7 +2320,10 @@ def join_tournament(
 
             }
 
+        # =========================
         # MATCH FULL
+        # =========================
+
         if joined_players >= players:
 
             return {
@@ -2273,7 +2333,10 @@ def join_tournament(
 
             }
 
-        # SAFE WALLET DEDUCTION
+        # =========================
+        # WALLET CHECK
+        # =========================
+
         wallet_update = db.users.update_one(
 
             {
@@ -2302,7 +2365,6 @@ def join_tournament(
 
         )
 
-        # BALANCE FAILED
         if wallet_update.modified_count == 0:
 
             return {
@@ -2311,17 +2373,23 @@ def join_tournament(
                 "Insufficient Balance"
 
             }
-        # UPDATE TOURNAMENT
-        update_result =db.tournaments.update_one(
+
+        # =========================
+        # UPDATE PLAYER COUNT
+        # =========================
+
+        update_result = db.tournaments.update_one(
 
             {
                 "_id":
                 tournament_object_id,
+
                 "joined_players": {
 
                     "$lt": players
 
                 }
+
             },
 
             {
@@ -2334,8 +2402,11 @@ def join_tournament(
             }
 
         )
+
         if update_result.modified_count == 0:
-             # REFUND MONEY
+
+            # REFUND
+
             db.users.update_one(
 
                 {
@@ -2355,13 +2426,28 @@ def join_tournament(
                 }
 
             )
+
             return {
 
                 "error":
                 "Match Full"
 
             }
-        # ADD ENTRY TO ADMIN WALLET
+
+        # =========================
+        # SLOT NUMBER
+        # =========================
+
+        real_count_before = db.joined.count_documents({
+            "tournament_id": tournament_id
+        })
+
+        slot_number = real_count_before + 1
+
+        # =========================
+        # ADMIN WALLET
+        # =========================
+
         db.admin_wallet.update_one(
 
             {},
@@ -2380,42 +2466,123 @@ def join_tournament(
 
                 "$set": {
 
-                    "updated_at": datetime.now(timezone.utc)
+                    "updated_at":
+                    datetime.now(timezone.utc)
 
                 }
 
             }
 
         )
-
+        
+        # =========================
         # SAVE JOIN
-        db.joined.insert_one({
+        # =========================
+
+        join_data = {
 
             "email": email,
 
             "tournament_id":
             tournament_id,
 
-            "ingame_name":
-            ingame_name,
+            "slot":
+            slot_number,
 
             "joined_at":
             datetime.now(timezone.utc)
 
-        })
+        }
+
+        # SOLO MATCH
+        if is_solo:
+
+            if not ingame_name.strip():
+
+                return {
+                    "error": "Enter IGN"
+                }
+
+            join_data["ingame_name"] = ingame_name.strip()
+
+        # TEAM MATCH
+        else:
+            if not team_name.strip():
+
+                return {
+                    "error": "Enter Team Name"
+                }
+            join_data["team_name"] = team_name.strip()
+
+            join_data["members"] = [
+
+                str(m).strip()
+
+                for m in (members or [])
+
+                if str(m).strip()
+
+            ]
+
+        db.joined.insert_one(join_data)
+
+        # =========================
+        # TRANSACTION
+        # =========================
 
         db.transactions.insert_one({
 
             "tournament_id": tournament_id,
+
             "email": email,
+
             "type": "Join Match",
+
             "amount": entry_fee,
+
             "status": "SUCCESS",
+
             "message": f"{tournament.get('title')}",
+
             "created_at": datetime.now(timezone.utc),
-            "expireAt": datetime.now(timezone.utc) + timedelta(days=30)
+
+            "expireAt":
+
+                datetime.now(timezone.utc)
+
+                + timedelta(days=30)
 
         })
+
+        # =========================
+        # REAL PLAYER COUNT
+        # =========================
+
+        real_count = db.joined.count_documents({
+
+            "tournament_id":
+            tournament_id
+
+        })
+
+        db.tournaments.update_one(
+
+            {
+                "_id":
+                tournament_object_id
+            },
+
+            {
+                "$set": {
+
+                    "joined_players":
+                    real_count
+
+                }
+
+            }
+
+        )
 
         return {
 
@@ -2432,7 +2599,7 @@ def join_tournament(
             str(e)
 
         }
-
+    
 @app.delete("/delete-tournament/{id}")
 def delete_tournament(
 
