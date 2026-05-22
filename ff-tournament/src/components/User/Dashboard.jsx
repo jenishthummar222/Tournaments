@@ -1845,6 +1845,9 @@ const Dashboard = () => {
           });
             
           const showResultOnly = isCompleted && joined && !isCancelled;
+          const hasTempResult =
+            !!selectedTournament.temp_result_public_id &&
+            selectedTournament.leaderboard_preview?.length > 0;
             
           const isSolo =
             selectedTournament.title
@@ -1878,7 +1881,7 @@ const Dashboard = () => {
                 </h2>
 
                 {/* PLAYER SLOT SECTION */}
-                {!isCompleted && joined && (
+                {!isCompleted && joined && !hasTempResult &&(
 
                   <div className="mb-6 rounded-[30px] border border-green-500/20 bg-gradient-to-br from-green-500/5 to-cyan-500/5 p-6">
 
@@ -2064,62 +2067,191 @@ const Dashboard = () => {
 
                 )}
 
-                {/* RESULT SECTION */}
-                {showResultOnly ? (
+               {/* RESULT SECTION CLEAN LOGIC */}
+                {hasTempResult ? (
 
-                  selectedTournament.result_image ? (
+                  <div className="mb-6 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 p-5">
 
-                    <div className="mb-6 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 p-5">
+                    <h2 className="text-2xl font-black text-yellow-400 mb-5">
+                      MATCH RESULT
+                    </h2>
+                    {/* TOP 3 (IMPROVED UI ONLY) */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-                      <h2 className="text-2xl font-black text-yellow-400 mb-5">
+                    {/* 🥇 1st PLACE (HERO CARD) */}
+                    {selectedTournament.leaderboard_preview[0] && (
+                      <div className="relative bg-gradient-to-b from-yellow-400/20 to-yellow-900/10 border border-yellow-400/40 rounded-3xl p-6 text-center shadow-lg scale-105 overflow-hidden">
 
-                        MATCH RESULT
+                        {/* glow effect */}
+                        <div className="absolute inset-0 bg-yellow-400/10 blur-2xl"></div>
 
-                      </h2>
+                        <div className="relative z-10">
 
-                      <img
-                        src={
-                          `${selectedTournament.result_image}`
-                        }
-                        alt="result"
-                        className="rounded-3xl w-full border border-yellow-500/20"
-                      />
+                          <div className="text-5xl mb-2">🥇</div>
 
-                    </div>
+                          <div className="text-white font-black text-lg truncate">
+                            {selectedTournament.leaderboard_preview[0]["Game Name"]}
+                          </div>
 
-                  ): (
+                          <div className="text-yellow-300 font-bold mt-2">
+                            Total: {selectedTournament.leaderboard_preview[0].Total}
+                          </div>
+                          <div className="text-yellow-300 mt-2">
+                          P P : {selectedTournament.leaderboard_preview[0]["Position"]}
+                          </div>
+                          <div className="text-gray-300 text-sm mt-1">
+                            Kills: {selectedTournament.leaderboard_preview[0].Kills}
+                          </div>
+                          
+                          <div className="text-green-400 text-sm mt-1 font-bold">
+                            BOOYAH: {selectedTournament.leaderboard_preview[0]["BOOYAH"]}
+                          </div>
 
-                  <div className="space-y-6">
-
-                    <div className="rounded-3xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 p-6 text-center">
-
-                      <h2 className="text-4xl font-black text-yellow-400 mb-4">
-                        MATCH RESULT
-                      </h2>
-
-                      <p className="text-gray-400">
-                        Tournament Result comming soon..
-                      </p>
-
-                    </div>
+                        </div>
 
                       </div>
-                  )
+                    )}
+
+                    {/* 🥈 2nd PLACE */}
+                    {selectedTournament.leaderboard_preview[1] && (
+                      <div className="bg-gradient-to-b from-gray-400/20 to-gray-900/10 border border-gray-400/30 rounded-3xl p-5 text-center">
+
+                        <div className="text-4xl">🥈</div>
+
+                        <div className="text-white font-bold mt-2 truncate">
+                          {selectedTournament.leaderboard_preview[1]["Game Name"]}
+                        </div>
+
+                        <div className="text-gray-300 mt-2">
+                          Total: {selectedTournament.leaderboard_preview[1].Total}
+                        </div>
+                        <div className="text-gray-300 mt-2">
+                          P P : {selectedTournament.leaderboard_preview[1]["Position"]}
+                          </div>
+                        <div className="text-red-400 text-sm mt-1">
+                          Kills: {selectedTournament.leaderboard_preview[1].Kills}
+                        </div>
+                          
+                          <div className="text-gray-300 mt-2">
+                            BOOYAH: {selectedTournament.leaderboard_preview[1]["BOOYAH"]}
+                          </div>
+
+                      </div>
+                    )}
+
+                    {/* 🥉 3rd PLACE */}
+                    {selectedTournament.leaderboard_preview[2] && (
+                      <div className="bg-gradient-to-b from-orange-400/20 to-orange-900/10 border border-orange-400/30 rounded-3xl p-4 text-center">
+
+                        <div className="text-3xl">🥉</div>
+
+                        <div className="text-white font-bold mt-2 truncate">
+                          {selectedTournament.leaderboard_preview[2]["Game Name"]}
+                        </div>
+
+                        <div className="text-orange-300 mt-2">
+                          Total: {selectedTournament.leaderboard_preview[2].Total}
+                          </div>
+
+                          <div className="text-orange-300 mt-2">
+                          P P : {selectedTournament.leaderboard_preview[2]["Position"]}
+                          </div>
+
+                        <div className="text-red-400 text-sm mt-1">
+                          Kills: {selectedTournament.leaderboard_preview[1].Kills}
+                        </div>
+                          
+                          <div className="text-orange-300 mt-2">
+                            BOOYAH: {selectedTournament.leaderboard_preview[3]["BOOYAH"]}
+                          </div>
+                      </div>
+                    )}
+
+                  </div>
+                    
+                    {/* REMAINING PLAYERS */}
+                  {selectedTournament.leaderboard_preview.length > 3 && (
+
+                    <div className="rounded-3xl border border-gray-700 bg-black/30 p-4">
+
+                      <h3 className="text-gray-300 font-bold mb-3">
+                        Remaining Players
+                      </h3>
+
+                      <div className="space-y-2 max-h-72 overflow-y-auto pr-2">
+
+                        {selectedTournament.leaderboard_preview.slice(3).map((p, i) => (
+
+                          <div
+                            key={i}
+                            className="flex items-center justify-between p-3 rounded-xl border border-gray-700 bg-black/20 hover:bg-black/40 transition-all"
+                          >
+
+                            {/* LEFT SIDE */}
+                            <div className="flex items-center gap-3 text-gray-300">
+
+                              <span className="text-gray-500 font-bold w-8">
+                                #{i + 4}
+                              </span>
+
+                              <div className="truncate">
+                                {p["Game Name"]}
+                              </div>
+
+                            </div>
+
+                            {/* RIGHT SIDE STATS */}
+                            <div className="flex gap-4 text-sm">
+
+                              <span className="text-green-400 font-bold">
+                                BOOYAH: {p["BOOYAH"] || 0}
+                              </span>
+                              <span className="text-red-400 font-bold">
+                                Position Point: {p["Position"] || 0}
+                              </span>
+                              <span className="text-red-400 font-bold">
+                                Kills: {p["Kills"] || 0}
+                              </span>
+
+                              <span className="text-yellow-300 font-bold">
+                                Total: {p.Total}
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        ))}
+
+                      </div>
+
+                    </div>
+
+                  )}
+                </div>
+                ) : hasTempResult? (
+
+                  /* =========================
+                    CASE 2: NO RESULT (SHOW NOTHING)
+                    ========================= */
+                  null
 
                 ) : (
 
+                  /* =========================
+                    CASE 1: MATCH NOT COMPLETED
+                    ========================= */
+
                   <>
-                  
                     {/* INFO */}
                     <div className="space-y-4 text-lg text-gray-300 mb-8">
 
                       <p>
                         🎟 Entry Fee:
                         <span className="ml-2 text-yellow-400 font-bold">
-                          {selectedTournament.entry_fee == 0 
+                          {selectedTournament.entry_fee == 0
                             ? "Free"
-                            :"₹ " + selectedTournament.entry_fee
-                          }
+                            : "₹ " + selectedTournament.entry_fee}
                         </span>
                       </p>
 
@@ -2140,58 +2272,37 @@ const Dashboard = () => {
                       <p>
                         ⏰ Match Time:
                         <span className="ml-2 text-cyan-400 font-bold">
-
                           {selectedTournament.match_time
-                            ? new Date(
-                                selectedTournament.match_time
-                              ).toLocaleString("en-IN", {
+                            ? new Date(selectedTournament.match_time).toLocaleString("en-IN", {
                                 timeZone: "Asia/Kolkata"
                               })
                             : "Not Scheduled"}
-
                         </span>
                       </p>
 
                     </div>
 
-                   {/* RULES */}
-                  <div className="rounded-3xl bg-black/40 border border-yellow-500/10 p-6 mb-8">
+                    {/* RULES */}
+                    <div className="rounded-3xl bg-black/40 border border-yellow-500/10 p-6 mb-8">
 
-                    <h3 className="text-2xl font-black text-yellow-400 mb-4">
+                      <h3 className="text-2xl font-black text-yellow-400 mb-4">
+                        MATCH RULES
+                      </h3>
 
-                      MATCH RULES
+                      <ul className="space-y-3 text-gray-300">
 
-                    </h3>
+                        {selectedTournament.rules?.length > 0 ? (
+                          selectedTournament.rules.map((rule, index) => (
+                            <li key={index}>✅ {rule}</li>
+                          ))
+                        ) : (
+                          <li>No Rules Added</li>
+                        )}
 
-                    <ul className="space-y-3 text-gray-300">
+                      </ul>
 
-                      {selectedTournament.rules?.length > 0 ? (
-
-                        selectedTournament.rules.map((rule, index) => (
-
-                          <li key={index}>
-
-                            ✅ {rule}
-
-                          </li>
-
-                        ))
-
-                      ) : (
-
-                        <li>
-
-                          No Rules Added
-
-                        </li>
-
-                      )}
-
-                    </ul>
-
-                  </div>
+                    </div>
                   </>
-
                 )}
 
                 {/* JOIN BUTTON */}
@@ -2579,58 +2690,61 @@ const Dashboard = () => {
                   </p>
 
                 )}
+                {/* SHOW PAYMENT SECTION ONLY AFTER VALID AMOUNT */}
+                {amount && Number(amount) >= 20 && (
+                  <>
+                    <img
+                      src="https://res.cloudinary.com/drrxe4qzt/image/upload/v1779270119/upi-qr_z70r4m.jpg"
+                      alt="upi"
+                      className="w-64 mx-auto rounded-2xl mb-5"
+                    />
 
-                <img
-                  src="https://res.cloudinary.com/drrxe4qzt/image/upload/v1779270119/upi-qr_z70r4m.jpg"
-                  alt="upi"
-                  className="w-64 mx-auto rounded-2xl mb-5"
-                />
+                    <label className="block mb-5">
 
-               <label className="block mb-5">
+                      <span className="block text-gray-300 font-bold mb-3">
 
-                <span className="block text-gray-300 font-bold mb-3">
+                        Upload Payment Screenshot
 
-                  Upload Payment Screenshot
+                      </span>
 
-                </span>
+                      <div className="relative border-2 border-dashed border-green-500/30 rounded-3xl bg-black/30 hover:bg-black/40 transition-all duration-300 p-8 text-center cursor-pointer">
 
-                <div className="relative border-2 border-dashed border-green-500/30 rounded-3xl bg-black/30 hover:bg-black/40 transition-all duration-300 p-8 text-center cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            setScreenshot(e.target.files[0])
+                          }
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setScreenshot(e.target.files[0])
-                    }
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                        <div className="space-y-3">
 
-                  <div className="space-y-3">
+                          <div className="text-5xl">
+                            📸
+                          </div>
 
-                    <div className="text-5xl">
-                      📸
-                    </div>
+                          <p className="text-green-400 font-black text-lg">
 
-                    <p className="text-green-400 font-black text-lg">
+                            {screenshot
+                              ? screenshot.name
+                              : "Click to Upload Screenshot"}
 
-                      {screenshot
-                        ? screenshot.name
-                        : "Click to Upload Screenshot"}
+                          </p>
 
-                    </p>
+                          <p className="text-gray-500 text-sm">
 
-                    <p className="text-gray-500 text-sm">
+                            JPG, PNG Supported
 
-                      JPG, PNG Supported
+                          </p>
 
-                    </p>
+                        </div>
 
-                  </div>
+                      </div>
 
-                </div>
-
-              </label>
-
+                    </label>
+                  </>
+                )}
                 <button
 
                   onClick={submitAddCash}

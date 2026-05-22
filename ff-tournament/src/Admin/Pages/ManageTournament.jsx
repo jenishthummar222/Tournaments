@@ -231,13 +231,13 @@ const ManageTournament = () => {
         setUploadProgress((prev) => ({ ...prev, [id]: 0 }));
 
         const formData = new FormData();
-        formData.append("result_image", file);
+        formData.append("result_file", file);
 
         const xhr = new XMLHttpRequest();
 
         xhr.open(
           "POST",
-          `${import.meta.env.VITE_API_URL}/upload-result-image/${id}`
+          `${import.meta.env.VITE_API_URL}/upload-temp-leaderboard/${id}`
         );
 
         xhr.setRequestHeader(
@@ -875,116 +875,45 @@ const ManageTournament = () => {
                 <div className="grid md:grid-cols-2 gap-5">
 
                   {/* ========================= */}
-                  {/* EXCEL RESULT */}
+                  {/* FINAL RESULT (EXCEL) */}
                   {/* ========================= */}
 
-                  <div
-                    className="
-                    rounded-3xl
-                    border
-                    border-yellow-500/20
-                    bg-black/40
-                    p-5
-                    "
-                  >
+                  <div className="rounded-3xl border border-yellow-500/20 bg-black/40 p-5">
 
                     <h2 className="text-xl font-black text-yellow-400 mb-4">
-
-                      Excel Result
-
+                      FINAL RESULT (Money Settlement)
                     </h2>
 
-                    {/* FILE PICKER */}
-                    <label
-                      className="
-                      rounded-2xl
-                      border
-                      border-yellow-500/20
-                      bg-black/30
-                      p-4
-                      cursor-pointer
-                      hover:border-yellow-400
-                      transition-all
-                      block
-                      "
-                    >
+                    <label className="rounded-2xl border border-yellow-500/20 bg-black/30 p-4 cursor-pointer hover:border-yellow-400 transition-all block">
 
                       <input
-
                         type="file"
-
                         accept=".xlsx,.xls"
-
                         hidden
-
                         onChange={(e) =>
-
                           setExcelFile({
-
                             ...excelFile,
-
-                            [tournament._id]:
-                            e.target.files[0]
-
+                            [tournament._id]: e.target.files[0]
                           })
-
                         }
-
                       />
 
                       <div className="text-yellow-400 font-bold mb-2">
-
-                        Choose Excel File
-
+                        Upload Final Result (Settlement Excel)
                       </div>
 
                       <div className="text-gray-400 text-sm break-all">
-
-                        {
-
-                          excelFile[tournament._id]?.name ||
-
-                          "No Excel Selected"
-
-                        }
-
+                        {excelFile[tournament._id]?.name || "No file selected"}
                       </div>
 
                     </label>
 
-                    {/* BUTTON */}
                     <button
                       onClick={() => uploadExcelResult(tournament._id)}
-                      className="
-                        mt-4
-                        w-full
-                        py-4
-                        rounded-2xl
-                        bg-yellow-400
-                        text-black
-                        font-black
-                        hover:scale-[1.02]
-                        transition-all
-                      "
+                      className="mt-4 w-full py-4 rounded-2xl bg-yellow-400 text-black font-black"
                     >
-                      Upload Excel Result
+                      Publish Final Result
                     </button>
-
-                    {/* PROGRESS BAR (OUTSIDE BUTTON) */}
-                    {uploading[tournament._id] && excelFile[tournament._id] && (
-                      <div className="mt-3">
-                        <div className="w-full bg-gray-700 rounded-full h-2">
-                          <div
-                            className="bg-yellow-400 h-2 rounded-full transition-all"
-                            style={{ width: `${uploadProgress[tournament._id] || 0}%` }}
-                          />
-                        </div>
-
-                        <p className="text-xs text-gray-300 mt-1">
-                          Uploading Excel... {uploadProgress[tournament._id] || 0}%
-                        </p>
-                      </div>
-                    )}
 
                   </div>
 
@@ -1004,7 +933,7 @@ const ManageTournament = () => {
 
                     <h2 className="text-xl font-black text-green-400 mb-4">
 
-                      Result Image
+                      LIVE LEADERBOARD (Temp Result)
 
                     </h2>
 
@@ -1027,7 +956,7 @@ const ManageTournament = () => {
 
                         type="file"
 
-                        accept="image/*"
+                        accept=".xlsx,.xls"
 
                         hidden
 
@@ -1048,7 +977,7 @@ const ManageTournament = () => {
 
                       <div className="text-green-400 font-bold mb-2">
 
-                        Choose Result Image
+                         Upload Leaderboard File
 
                       </div>
 
@@ -1091,7 +1020,7 @@ const ManageTournament = () => {
 
                     >
 
-                      Upload Result Image
+                      Publish Live Leaderboard
 
                     </button>
 

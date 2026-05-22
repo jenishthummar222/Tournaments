@@ -36,6 +36,7 @@ import cloudinary.uploader
 import os
 import pandas as pd
 import requests
+from io import BytesIO
 
 
 #email
@@ -1314,12 +1315,12 @@ async def upload_excel_result(
 # UPLOAD RESULT IMAGE
 # ==============================
 
-@app.post("/upload-result-image/{tournament_id}")
+@app.post("/upload-temp-leaderboard/{tournament_id}")
 async def upload_result_image(
 
     tournament_id: str,
 
-    result_image: UploadFile = File(...),
+    result_file: UploadFile = File(...),
 
     admin = Depends(verify_admin)
 
@@ -1337,20 +1338,15 @@ async def upload_result_image(
 
         if not tournament:
 
-            return {
-
-                "error":
-                "Tournament not found"
-
-            }
-
+            raise HTTPException(status_code=404, detail="Tournament not found")
+        
         # =========================
         # DELETE OLD IMAGE
         # =========================
 
         old_public_id = tournament.get(
 
-            "result_image_public_id"
+            "temp_result_public_id"
 
         )
 
@@ -1358,9 +1354,24 @@ async def upload_result_image(
 
             cloudinary.uploader.destroy(
 
-                old_public_id
+                old_public_id,
+                resource_type="raw"
 
             )
+        # =========================
+        # READ EXCEL
+        # =========================
+        contents = await result_file.read()
+        df = pd.read_excel(BytesIO(contents))
+        df = df.fillna(0)
+
+        # SORT BY TOTAL (LEADERBOARD)
+        df = df.sort_values(by="Total", ascending=False)
+
+        leaderboard = df.to_dict(orient="records")
+
+        # reset pointer (optional safety)
+        result_file.file.seek(0)
 
         # =========================
         # UPLOAD NEW IMAGE
@@ -1368,14 +1379,13 @@ async def upload_result_image(
 
         upload_result = cloudinary.uploader.upload(
 
-            result_image.file,
-
-            folder="ff_tournament_results"
+            result_file.file,
+            resource_type="raw",
+            folder="ff_tournament_temp_results"
 
         )
 
-        result_image_url = upload_result["secure_url"]
-
+        file_url = upload_result["secure_url"]
         public_id = upload_result["public_id"]
 
         # =========================
@@ -1383,45 +1393,24 @@ async def upload_result_image(
         # =========================
 
         db.tournaments.update_one(
-
-            {
-                "_id":
-                ObjectId(tournament_id)
-            },
-
+            {"_id": ObjectId(tournament_id)},
             {
                 "$set": {
-
-                    "result_image":
-                    result_image_url,
-
-                    "result_image_public_id":
-                    public_id
-
+                    "temp_result_file": file_url,
+                    "temp_result_public_id": public_id,
+                    "leaderboard_preview": leaderboard
                 }
-
             }
-
         )
 
         return {
-
-            "message":
-            "Result Image Uploaded",
-
-            "result_image":
-            result_image_url
-
+            "message": "Temporary Result Uploaded",
+            "leaderboard": leaderboard
         }
-
+    
     except Exception as e:
 
-        return {
-
-            "error":
-            str(e)
-
-        }
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ==============================
 # GET RESULT
@@ -1441,27 +1430,12 @@ def get_result(
 
     })
     if not tournament:
-
-        return {
-
-            "error":
-            "Tournament Not Found"
-
-        }
+        raise HTTPException(status_code=404, detail="Tournament Not Found")
 
     return {
-
-        "title":
-        tournament.get(
-            "title"
-        ),
-
-        "result_image":
-        tournament.get(
-            "result_image",
-            ""
-        )
-
+        "title": tournament.get("title", ""),
+        "result_image": tournament.get("temp_result_file", ""),
+        "leaderboard": tournament.get("leaderboard_preview", [])
     }
 
 # ==============================
@@ -2733,12 +2707,7 @@ def cancel_tournament(
         })
 
         if user:
-
-            new_wallet = (
-                user.get("wallet", 0)
-                + entry_fee
-            )
-
+                     
             # UPDATE WALLET
             db.users.update_one(
 
@@ -2747,8 +2716,11 @@ def cancel_tournament(
                 },
 
                 {
-                    "$set": {
-                        "wallet": new_wallet
+                    "$inc": {
+
+                        "wallet": entry_fee,
+                        "matches": -1
+
                     }
                 }
 
