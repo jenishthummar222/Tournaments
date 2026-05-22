@@ -750,7 +750,7 @@ const Home = () => {
               </a>
               
             <a
-              href="mailto:support@ffarena.com"
+              href="mailto:jk.tournaments99@gmail.com"
 
               className="
               px-8 py-4
