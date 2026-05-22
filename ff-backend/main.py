@@ -1901,6 +1901,38 @@ def register(data: dict):
 
     }
 
+@app.get("/profile")
+def get_profile(user_auth = Depends(verify_user)):
+
+    user = db.users.find_one({
+
+        "email": user_auth["email"]
+
+    })
+
+    if not user:
+
+        return {
+
+            "error": "User not found"
+
+        }
+
+    return {
+
+          "wallet": user.get("wallet", 0),
+
+            "matches": user.get("matches", 0),
+
+            "email": user.get("email"),
+
+            "name": user.get("name", ""),
+
+            "profile_pic": user.get("profile_pic", ""),
+
+            "status": user.get("status", "active")
+
+        }
 
 @app.get("/tournaments")
 def get_tournaments():
@@ -3958,18 +3990,6 @@ def transactions(email: str):
     )
 
     return data
-
-# wallet
-@app.get("/wallet")
-def get_wallet(user_auth = Depends(verify_user)):
-
-    user = db.users.find_one({
-        "email": user_auth["email"]
-    })
-
-    return {
-        "wallet": user.get("wallet", 0)
-    }
 
 
 # =========================

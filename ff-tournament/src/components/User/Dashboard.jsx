@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
 
 import {
   Wallet,
@@ -34,6 +35,7 @@ const Dashboard = () => {
 
   // set amout part
   const [showAddCashModal, setShowAddCashModal] = useState(false);
+  const [showPaymentSection, setShowPaymentSection] = useState(false);
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
@@ -88,35 +90,8 @@ const Dashboard = () => {
   const [joining, setJoining] = useState(false);
 
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
-
-  const updateWallet = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await apiFetch(`${import.meta.env.VITE_API_URL}/wallet`);          
-
-      const data = await res.json();
-
-      if (!data.wallet && data.wallet !== 0) return;
-
-      setUser((prev) => ({
-        ...prev,
-        wallet: data.wallet,
-      }));
-    } catch (err) {
-      console.log("wallet fetch error", err);
-    }
-  };
     
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateWallet();
-    }, 9000);
-    
-    return () => clearInterval(interval);
-  }, []);
- 
+   
   // Update Name
   const updateName = async () => {
 
@@ -158,6 +133,21 @@ const Dashboard = () => {
       );
 
       const data = await response.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
 
       if (data.error) {
 
@@ -201,7 +191,6 @@ const Dashboard = () => {
 
   };
 
-
   // update profile pic
   const uploadProfilePic = async (file) => {
 
@@ -226,6 +215,21 @@ const Dashboard = () => {
       );
 
       const data = await response.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
 
       if (data.error) {
 
@@ -268,7 +272,82 @@ const Dashboard = () => {
 
   };
 
+  const refreshUser = async () => {
 
+    try {
+
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+
+        `${import.meta.env.VITE_API_URL}/profile`,
+
+        {
+
+          headers: {
+
+            Authorization: `Bearer ${token}`
+
+          }
+
+        }
+
+      );
+
+      const data = await res.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
+
+      if (!data.error) {
+
+        localStorage.setItem(
+
+          "user",
+
+          JSON.stringify(data)
+
+        );
+
+        setUser(data);
+
+      }
+
+    }
+
+    catch (err) {
+
+      console.log(err);
+
+    }
+
+  };
+
+  useEffect(() => {
+
+    refreshUser();
+
+    const interval = setInterval(() => {
+
+      refreshUser();
+
+    }, 9000);
+
+    return () => clearInterval(interval);
+
+  }, []);
   
   // add cash
   const submitAddCash = async () => {
@@ -324,6 +403,21 @@ const Dashboard = () => {
 
       const data = await response.json();
 
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
+
       if (data.error) {
 
         errorToast(data.error);
@@ -357,8 +451,6 @@ const Dashboard = () => {
     }
 
   };
-
-
  
   // withdraw cash
   const submitWithdraw = async () => {
@@ -439,6 +531,21 @@ const Dashboard = () => {
 
       const data = await response.json();
 
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
+
       // =========================
       // ERROR
       // =========================
@@ -484,6 +591,21 @@ const Dashboard = () => {
       );
 
       const data = await res.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
 
       setAllMatches(data);
 
@@ -567,6 +689,7 @@ const Dashboard = () => {
         setWalletHistory(data);
 
     });
+    refreshUser();
   }, []);
 
   useEffect(() => {
@@ -584,6 +707,21 @@ const Dashboard = () => {
       );
 
       const data = await res.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
 
       setSelectedTournament(data);
 
@@ -663,6 +801,21 @@ const Dashboard = () => {
       );
 
       const data = await response.json();
+
+      // USER BANNED
+      if (data.detail === "Account banned") {
+
+        localStorage.removeItem("token");
+
+        localStorage.removeItem("user");
+
+        errorToast("Account banned");
+
+        window.location.href = "/login";
+
+        return;
+
+      }
 
       if (data.error) {
 
@@ -847,6 +1000,39 @@ const Dashboard = () => {
     );
 
   };
+
+  const matches = user?.matches || 0;
+
+  let Prorank = "Bronze Warrior";
+  let rankColor = "from-orange-400 to-yellow-500";
+
+  if (matches >= 10) {
+
+    Prorank = "Silver Killer";
+    rankColor = "from-gray-300 to-gray-500";
+
+  }
+
+  if (matches >= 25) {
+
+    Prorank = "Gold Dominator";
+    rankColor = "from-yellow-400 to-orange-500";
+
+  }
+
+  if (matches >= 50) {
+
+    Prorank = "Diamond Legend";
+    rankColor = "from-cyan-400 to-blue-500";
+
+  }
+
+  if (matches >= 100) {
+
+    Prorank = "Elite Conqueror";
+    rankColor = "from-purple-500 to-pink-500";
+
+  }
 
   return (
 
@@ -1044,9 +1230,24 @@ const Dashboard = () => {
                 </p>               
 
                 {/* Rank */}
-                <div className="mt-6 px-6 py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black text-lg shadow-[0_0_30px_rgba(255,215,0,0.35)]">
+                <div
+                  className={`
 
-                  🔥 Elite Warrior  
+                    mt-6
+                    px-6
+                    py-3
+                    rounded-2xl
+                    bg-gradient-to-r
+                    ${rankColor}
+                    text-black
+                    font-black
+                    text-lg
+                    shadow-[0_0_30px_rgba(255,215,0,0.35)]
+
+                  `}
+                >
+
+                  🔥 {Prorank}
 
                 </div>
 
@@ -2642,7 +2843,17 @@ const Dashboard = () => {
               <div className="scrollbar-hide overflow-y-auto w-full max-w-md rounded-3xl bg-gray-900 border border-green-500/20 p-8 max-h-[90vh] relative">
 
                 <button
-                  onClick={() => setShowAddCashModal(false)}
+                  onClick={() => {
+
+                    setShowAddCashModal(false);
+
+                    setShowPaymentSection(false);
+
+                    setAmount("");
+
+                    setScreenshot(null);
+
+                  }}
                   className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-red-400"
                 >
                   ×
@@ -2690,14 +2901,56 @@ const Dashboard = () => {
                   </p>
 
                 )}
+                {amount && Number(amount) >= 20 && !showPaymentSection && (
+
+                  <button
+
+                    onClick={() => setShowPaymentSection(true)}
+
+                    className="
+                      w-full
+                      py-4
+                      rounded-2xl
+                      font-black
+                      text-lg
+                      transition-all
+                      bg-gradient-to-r
+                      from-green-400
+                      to-emerald-500
+                      text-black
+                      hover:scale-105
+                      mb-5
+                      mt-3
+                    "
+
+                  >
+
+                    PROCEED TO PAYMENT
+
+                  </button>
+
+                )}
                 {/* SHOW PAYMENT SECTION ONLY AFTER VALID AMOUNT */}
-                {amount && Number(amount) >= 20 && (
+                {showPaymentSection && amount && Number(amount) >= 20 && (
                   <>
-                    <img
-                      src="https://res.cloudinary.com/drrxe4qzt/image/upload/v1779270119/upi-qr_z70r4m.jpg"
-                      alt="upi"
-                      className="w-64 mx-auto rounded-2xl mb-5"
-                    />
+                    <div className="flex flex-col items-center mb-5">
+
+                      <div className="bg-white p-4 rounded-3xl">
+
+                        <QRCodeCanvas
+                          value={`upi://pay?pa=jenishthummar222@oksbi&pn=JK Tournament&am=${amount}&cu=INR`}
+                          size={250}
+                        />
+
+                      </div>
+
+                      <p className="text-green-400 font-bold mt-4 text-lg">
+
+                        Scan & Pay ₹{amount}
+
+                      </p>
+
+                    </div>
 
                     <label className="block mb-5">
 
@@ -2743,9 +2996,7 @@ const Dashboard = () => {
                       </div>
 
                     </label>
-                  </>
-                )}
-                <button
+                    <button
 
                   onClick={submitAddCash}
 
@@ -2801,13 +3052,17 @@ const Dashboard = () => {
 
                     ) : (
 
-                      "SUBMIT PAYMENT"
+                      "CONFIRM PAYMENT"
 
                     )
 
                   }
 
                 </button>
+                  </>
+                  
+                )}
+                
 
               </div>
 
@@ -2837,13 +3092,42 @@ const Dashboard = () => {
 
                 <input
                   type="number"
-                  placeholder="Enter Amount"
+                  placeholder={`Enter Amount (Available ₹${user?.wallet || 0})`}
                   value={withdrawAmount}
-                  onChange={(e) =>
-                    setWithdrawAmount(e.target.value)
-                  }
-                  className="w-full mb-5 rounded-2xl bg-black/40 border border-red-500/20 p-4 text-white outline-none"
+                    onChange={(e) => {
+
+                      const value = e.target.value;
+
+                      // BLOCK NEGATIVE
+                      if (Number(value) < 1) return;
+
+                      setWithdrawAmount(value);
+
+                    }}
+                  className=
+                  {`w-full mb-5 rounded-2xl bg-black/40 border border-red-500/20 p-4 text-white outline-none
+
+                    ${
+                      withdrawAmount &&
+                      Number(withdrawAmount) > Number(user?.wallet || 0)
+
+                        ? "border border-red-500"
+
+                        : "border border-red-500/20"
+                    }
+
+                  `}
                 />
+                {withdrawAmount &&
+                  Number(withdrawAmount) > Number(user?.wallet || 0) && (
+
+                    <p className="text-red-400 text-sm mb-4">
+
+                      Insufficient wallet balance
+
+                    </p>
+
+                )}
 
                 <input
                   type="text"
@@ -2867,8 +3151,33 @@ const Dashboard = () => {
                 />
 
                 <button
+
                   onClick={submitWithdraw}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-red-400 to-orange-500 text-black font-black text-lg"
+
+                  disabled={
+                    !withdrawAmount ||
+                    Number(withdrawAmount) > Number(user?.wallet || 0)
+                  }
+
+                  className={`
+
+                    w-full
+                    py-4
+                    rounded-2xl
+                    font-black
+                    text-lg
+                    transition-all
+
+                    ${
+                      !withdrawAmount ||
+                      Number(withdrawAmount) > Number(user?.wallet || 0)
+
+                        ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+
+                        : "bg-gradient-to-r from-red-400 to-orange-500 text-black"
+                    }
+
+                  `}
                 >
 
                   REQUEST WITHDRAW
