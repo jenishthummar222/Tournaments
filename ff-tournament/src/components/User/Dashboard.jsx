@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
+import logo from "../../assets/JK_Tournaments.png";
 
 import {
   Wallet,
@@ -1074,7 +1075,7 @@ const Dashboard = () => {
 
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
 
-              <Gamepad2 className="text-black w-6 h-6" />
+              <img src={logo} className="text-black w-12 h-12" />
 
             </div>
 
