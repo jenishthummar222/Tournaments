@@ -725,26 +725,30 @@ const Home = () => {
 
               <a
 
-                href="https://wa.me/917202920648"
+                href="https://instagram.com/ff.arena.tournaments"
 
                 target="_blank"
+
+                rel="noopener noreferrer"
 
                 className="
                 px-8 py-4
                 rounded-2xl
-                bg-green-500
-                text-black
+                bg-gradient-to-r
+                from-pink-500
+                via-red-500
+                to-yellow-500
+                text-white
                 font-black
                 hover:scale-105
                 transition-all
                 "
-
               >
 
-                WhatsApp Support
+                Instagram Support
 
               </a>
-
+              
             <a
               href="mailto:support@ffarena.com"
 
@@ -759,7 +763,6 @@ const Home = () => {
               inline-block
               font-bold
               "
-
             >
 
               Email Support
