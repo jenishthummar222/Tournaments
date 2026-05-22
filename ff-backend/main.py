@@ -1930,7 +1930,8 @@ def get_profile(user_auth = Depends(verify_user)):
 
             "profile_pic": user.get("profile_pic", ""),
 
-            "status": user.get("status", "active")
+            "status": user.get("status", "active"),
+            "is_admin": user.get("is_admin", False)
 
         }
 
