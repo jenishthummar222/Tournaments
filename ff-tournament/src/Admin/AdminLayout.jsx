@@ -70,7 +70,7 @@ const AdminLayout = () => {
 
   return (
 
-    <div className="min-h-screen bg-black text-white flex relative scrollbar-hide">
+    <div className=" min-h-screen bg-black text-white flex relative scrollbar-hide">
       {/* MOBILE TOPBAR */}
       <div className="fixed top-0 left-0 right-0 z-50 sm:hidden flex items-center justify-between px-4 py-4 bg-black/80 backdrop-blur-xl border-b border-yellow-500/10 scrollbar-hide">
 

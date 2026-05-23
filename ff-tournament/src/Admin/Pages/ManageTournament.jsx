@@ -406,7 +406,7 @@ const ManageTournament = () => {
 
   return (
 
-    <div>
+    <div className="overflow-x-hidden">
 
       {/* TOP */}
       <div className="mb-6 sm:mb-10">
@@ -426,7 +426,7 @@ const ManageTournament = () => {
       </div>
           
         {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10">
 
         {/* TOTAL */}
         <div
@@ -434,7 +434,7 @@ const ManageTournament = () => {
             rounded-[30px]
             bg-white/5
             border border-yellow-500/10
-            p-6
+            sm:p-6 p-4
             backdrop-blur-xl
             "
         >
@@ -457,7 +457,7 @@ const ManageTournament = () => {
 
             </h3>
 
-            <h1 className="text-5xl font-black text-yellow-400">
+            <h1 className="text-3xl sm:text-5xl font-black text-yellow-400">
 
             {tournaments.length}
 
@@ -471,7 +471,7 @@ const ManageTournament = () => {
             rounded-[30px]
             bg-white/5
             border border-green-500/10
-            p-6
+            sm:p-6 p-4
             backdrop-blur-xl
             "
         >
@@ -516,7 +516,7 @@ const ManageTournament = () => {
             rounded-[30px]
             bg-white/5
             border border-red-500/10
-            p-6
+            p-4 sm:p-6
             backdrop-blur-xl
             "
         >
@@ -583,13 +583,13 @@ const ManageTournament = () => {
             bg-white/5
             border
             border-yellow-500/10
-            p-8
+            sm:p-8 p-4
             backdrop-blur-xl
             `}
           >
 
             {/* TOP */}
-            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 sm:gap-6">
 
               {/* LEFT */}
               <div>
@@ -598,7 +598,7 @@ const ManageTournament = () => {
 
                   <Trophy className="text-yellow-400" />
 
-                  <h2 className="text-3xl font-black text-white">
+                  <h2 className="text-xl sm:text-3xl font-black text-white break-words">
 
                     {tournament.title}
 
@@ -606,7 +606,7 @@ const ManageTournament = () => {
 
                 </div>
 
-                <div className="flex flex-wrap gap-6 text-gray-400">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-gray-400 text-sm sm:text-base">
 
                   <div className="flex items-center gap-2">
 
@@ -642,7 +642,7 @@ const ManageTournament = () => {
 
                 <span
                   className={`
-                  px-5 py-2 rounded-2xl font-black
+                  px-3 sm:px-5 py-2 text-sm sm:text-base rounded-2xl font-black
                   ${
                     tournament.status === "live"
                     ? "bg-green-500/20 text-green-400"
@@ -663,7 +663,7 @@ const ManageTournament = () => {
             </div>
 
             {/* ROOM */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-8">
 
               <input
 
@@ -696,7 +696,7 @@ const ManageTournament = () => {
                 bg-black/40
                 border
                 border-yellow-500/20
-                p-4
+                p-3 sm:p-4 text-sm sm:text-base
                 outline-none
                 "
 
@@ -742,7 +742,7 @@ const ManageTournament = () => {
             </div>
 
             {/* BUTTONS */}
-            <div className="flex flex-wrap gap-4 mt-8">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 mt-5 sm:mt-8">
 
               {/* UPDATE ROOM */}
               <button
@@ -752,7 +752,7 @@ const ManageTournament = () => {
                 }
 
                 className="
-                px-6 py-4 rounded-2xl
+                px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base rounded-2xl
                 bg-yellow-400
                 text-black
                 font-black
@@ -851,15 +851,16 @@ const ManageTournament = () => {
                   }}
 
                   className="
-                  px-6 py-4 rounded-2xl
-                  bg-blue-500/20
-                  text-blue-400
+                  w-full sm:w-auto justify-center
+                  px-4 sm:px-6 py-3 sm:py-4
+                  rounded-2xl
+                  bg-pink-500
+                  text-black
                   font-black
                   flex items-center gap-2
                   hover:scale-105
                   transition-all
                   "
-
                   >
 
                   <Download size={20} />
@@ -872,7 +873,7 @@ const ManageTournament = () => {
               <div className="w-full space-y-5">
 
                 {/* FILE SECTIONS */}
-                <div className="grid md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
 
                   {/* ========================= */}
                   {/* FINAL RESULT (EXCEL) */}
@@ -927,7 +928,7 @@ const ManageTournament = () => {
                     border
                     border-green-500/20
                     bg-black/40
-                    p-5
+                    p-3 sm:p-5
                     "
                   >
 
@@ -981,7 +982,7 @@ const ManageTournament = () => {
 
                       </div>
 
-                      <div className="text-gray-400 text-sm break-all">
+                      <div className="text-gray-400 text-xs sm:text-sm break-all">
 
                         {
 

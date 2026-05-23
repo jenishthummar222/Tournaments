@@ -300,15 +300,16 @@ const AdminUsers = () => {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
 
       {/* HEADER */}
       <div
         className="
         flex
-        justify-between
-        items-center
-        flex-wrap
+        flex-col
+        sm:flex-row
+        sm:items-center
+        sm:justify-between
         gap-4
         "
       >
@@ -397,8 +398,8 @@ const AdminUsers = () => {
                 className="
                 flex
                 flex-col
-                lg:flex-row
-                justify-between
+                xl:flex-row
+                xl:justify-between
                 gap-6
                 "
               >
@@ -407,6 +408,8 @@ const AdminUsers = () => {
                 <div
                   className="
                   flex
+                  flex-col
+                  sm:flex-row
                   gap-5
                   "
                 >
@@ -418,13 +421,14 @@ const AdminUsers = () => {
                     alt="profile"
 
                     className="
-                    w-24
-                    h-24
-                    rounded-2xl
-                    object-cover
-                    border
-                    border-cyan-500/20
-                    "
+                      w-24
+                      h-24
+                      rounded-2xl
+                      object-cover
+                      border
+                      border-cyan-500/20
+                      shrink-0
+                      "
 
                   />
 
@@ -442,7 +446,7 @@ const AdminUsers = () => {
 
                     </h2>
 
-                    <p className="text-gray-300">
+                    <p className="text-gray-300 break-all">
 
                       {user.email}
 
@@ -498,11 +502,13 @@ const AdminUsers = () => {
                 <div
                   className="
                   flex
+                  flex-col
+                  sm:flex-row
                   gap-3
-                  flex-wrap
+                  w-full
+                  xl:w-auto
                   "
                 >
-
                   {/* EDIT WALLET */}
                   <button
 
@@ -511,6 +517,7 @@ const AdminUsers = () => {
                     }
 
                     className="
+                    w-full sm:w-auto justify-center
                     h-fit
                     flex
                     items-center
@@ -545,6 +552,7 @@ const AdminUsers = () => {
                         }
 
                         className="
+                        w-full sm:w-auto justify-center
                         h-fit
                         flex
                         items-center
@@ -576,6 +584,7 @@ const AdminUsers = () => {
                         }
 
                         className="
+                        w-full sm:w-auto justify-center
                         h-fit
                         flex
                         items-center
@@ -608,6 +617,7 @@ const AdminUsers = () => {
                     }
 
                     className="
+                    w-full sm:w-auto justify-center
                     h-fit
                     flex
                     items-center

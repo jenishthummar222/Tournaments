@@ -548,7 +548,7 @@ const Home = () => {
                     <div className="relative z-10 flex items-center justify-between mb-7">
 
                       <h3 className="sm:text-3xl text-[20px] font-black text-yellow-400">
-                        {tournament.title}dnksssw
+                        {tournament.title}
                       </h3>
                       
                       

@@ -96,24 +96,38 @@ const AddCashRequests = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden">
 
-      <h1 className="text-4xl font-black text-yellow-400">
+      <h1 className="text-2xl sm:text-4xl font-black text-yellow-400">
         ADD CASH REQUESTS
       </h1>
 
       {requests.map((request) => (
         <div
           key={request._id}
-          className="bg-white/5 border border-yellow-500/10 rounded-3xl p-6"
+          className="
+            bg-white/5
+            border border-yellow-500/10
+            rounded-3xl
+            p-3 sm:p-6
+            backdrop-blur-xl
+            overflow-hidden
+            "
         >
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 
             {/* IMAGE */}
             <img
               src={request.screenshot}
-              className="w-full max-w-md rounded-2xl border border-yellow-500/20 object-contain bg-black"
+              className="
+              w-full
+              rounded-2xl
+              border border-yellow-500/20
+              object-contain
+              bg-black
+              max-h-[500px]
+              "
               alt="payment"
             />
 
@@ -122,11 +136,11 @@ const AddCashRequests = () => {
 
               <div className="space-y-3">
 
-                <h2 className="text-2xl font-black text-white">
+                <h2 className="text-lg sm:text-2xl font-black text-white break-all">
                   {request.email}
                 </h2>
 
-                <p className="text-yellow-400 text-xl font-bold">
+                <p className="text-lg sm:text-xl font-bold text-yellow-400">
                   ₹{request.amount}
                 </p>
 
@@ -156,28 +170,59 @@ const AddCashRequests = () => {
 
               {/* ACTIONS */}
               {request.status === "pending" && (
-                <div className="flex gap-4 mt-6">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
 
                   <button
                     onClick={() => {
                       setEditData(request);
                       setEditOpen(true);
                     }}
-                    className="bg-blue-500 text-white px-5 py-3 rounded-2xl font-black flex items-center gap-2"
-                  >
+                    className="
+                      w-full sm:w-auto
+                      justify-center
+                      bg-blue-500
+                      text-white
+                      px-4 sm:px-5
+                      py-3
+                      rounded-2xl
+                      font-black
+                      flex items-center gap-2
+                      text-sm sm:text-base
+                      ">
                     <Pencil size={20} /> Edit
                   </button>
 
                   <button
                     onClick={() => approveRequest(request._id)}
-                    className="bg-green-500 text-black px-5 py-3 rounded-2xl font-black flex items-center gap-2"
+                    className="
+                    w-full sm:w-auto
+                    justify-center
+                    bg-green-400
+                    text-black
+                    px-4 sm:px-5
+                    py-3
+                    rounded-2xl
+                    font-black
+                    flex items-center gap-2
+                    text-sm sm:text-base
+                    "
                   >
                     <CheckCircle size={20} /> Approve
                   </button>
 
                   <button
                     onClick={() => retryRequest(request._id)}
-                    className="bg-red-500 text-white px-5 py-3 rounded-2xl font-black flex items-center gap-2"
+                    className="
+                      w-full sm:w-auto
+                      justify-center
+                      bg-red-500 text-white
+                      px-4 sm:px-5
+                      py-3
+                      rounded-2xl
+                      font-black
+                      flex items-center gap-2
+                      text-sm sm:text-base
+                      "
                   >
                     <RotateCcw size={20} /> Retry
                   </button>
@@ -206,11 +251,23 @@ const AddCashRequests = () => {
             />
 
             {/* MODAL BOX */}
-            <div className="relative bg-white w-full max-w-lg max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-
+            <div
+              className="
+              relative
+              bg-white
+              w-[95%]
+              sm:w-full
+              max-w-lg
+              max-h-[90vh]
+              rounded-2xl
+              shadow-2xl
+              flex flex-col
+              overflow-hidden
+              "
+            >
               {/* HEADER */}
-              <div className="p-5 bg-yellow-400">
-                <h2 className="text-xl font-black text-black">
+              <div className="sm:p-5 p-4 bg-yellow-400">
+                <h2 className="text-lg sm:text-xl font-black text-black">
                   Edit Add Cash Request
                 </h2>
                 <p className="text-sm text-black/70">
@@ -219,7 +276,13 @@ const AddCashRequests = () => {
               </div>
 
               {/* BODY */}
-              <div className="p-5 space-y-4 flex-1 overflow-y-auto scrollbar-hide">
+              <div className="
+                p-3 sm:p-5
+                space-y-4
+                flex-1
+                overflow-y-auto
+                scrollbar-hide
+                ">
 
                 {/* SCREENSHOT (IMPORTANT FIX) */}
                 <div>
@@ -305,10 +368,18 @@ const AddCashRequests = () => {
               </div>
 
               {/* FOOTER */}
-              <div className="flex gap-3 p-5 border-t bg-gray-50">
+              <div className="flex flex-col sm:flex-row gap-3 p-3 sm:p-5 border-t bg-gray-50">
 
                 <button
-                  className="w-1/2 bg-gray-200 hover:bg-gray-300 font-bold py-3 rounded-lg"
+                  className="
+                  w-full
+                  sm:w-1/2
+                  bg-gray-200
+                  hover:bg-gray-300
+                  font-bold
+                  py-3
+                  rounded-lg
+                  "
                   onClick={() => {
                     setEditOpen(false);
                     setEditData(null);
@@ -318,7 +389,7 @@ const AddCashRequests = () => {
                 </button>
 
                 <button
-                  className="w-1/2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg"
+                  className="w-full sm:w-1/2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg"
                   onClick={async () => {
                     const formData = new FormData();
                     formData.append("transaction_id", editData.transaction_id || "");

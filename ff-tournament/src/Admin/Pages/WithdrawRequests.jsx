@@ -199,51 +199,81 @@ const WithdrawRequests = () => {
 
   return (
 
-    <div className="space-y-6">
+  <div className="space-y-4 sm:space-y-6 overflow-x-hidden px-2 sm:px-0">
 
-      <h1
-        className="
-        text-4xl
-        font-black
-        text-red-400
-        "
-      >
+    <h1
+      className="
+      text-2xl sm:text-4xl
+      font-black
+      text-red-400
+      "
+    >
 
-        WITHDRAW REQUESTS
+      WITHDRAW REQUESTS
 
-      </h1>
+    </h1>
 
-      {
+    {
 
-        requests.map((request) => (
+      requests.length === 0 && (
+
+        <div
+          className="
+          rounded-3xl
+          border
+          border-red-500/10
+          bg-white/5
+          p-5 sm:p-6
+          text-center
+          text-gray-400
+          "
+        >
+
+          No withdraw requests found
+
+        </div>
+
+      )
+
+    }
+
+    {
+
+      requests.map((request) => (
+
+        <div
+
+          key={request._id}
+
+          className="
+          bg-white/5
+          border
+          border-red-500/10
+          rounded-3xl
+          p-4 sm:p-6
+          backdrop-blur-xl
+          overflow-hidden
+          "
+
+        >
 
           <div
-
-            key={request._id}
-
             className="
-            bg-white/5
-            border
-            border-red-500/10
-            rounded-3xl
-            p-6
+            flex
+            flex-col
+            gap-4
             "
-
           >
 
-            <div
-              className="
-              flex
-              flex-col
-              gap-4
-              "
-            >
+            {/* TOP */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
               <h2
                 className="
-                text-2xl
+                text-lg sm:text-2xl
                 font-black
                 text-white
+                break-all
                 "
               >
 
@@ -251,149 +281,201 @@ const WithdrawRequests = () => {
 
               </h2>
 
-              <p
-                className="
-                text-red-400
-                text-2xl
-                font-black
-                "
+              <span
+                className={`
+                px-4 py-2 rounded-2xl text-sm sm:text-base font-black w-fit
+                ${
+                  request.status === "pending"
+                    ? "bg-yellow-500/20 text-yellow-400"
+                    : request.status === "approved"
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-red-500/20 text-red-400"
+                }
+                `}
               >
 
-                ₹{request.amount}
+                {request.status.toUpperCase()}
 
-              </p>
+              </span>
 
-              <p className="text-gray-300">
+            </div>
 
-                UPI ID:
-                {" "}
-                {request.upi_id}
+            {/* AMOUNT */}
+            <p
+              className="
+              text-red-400
+              text-2xl sm:text-4xl
+              font-black
+              "
+            >
 
-              </p>
+              ₹{request.amount}
 
-              <p className="text-gray-300">
+            </p>
 
-                Status:
-                {" "}
-                {request.status}
+            {/* INFO GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-              </p>
+              <div className="rounded-2xl bg-black/30 border border-red-500/10 p-4">
 
-              {
+                <p className="text-gray-500 text-xs sm:text-sm mb-1">
 
-                request.reason && (
+                  UPI ID
 
-                  <p className="text-yellow-400">
+                </p>
 
-                    Reason:
-                    {" "}
+                <p className="text-gray-200 break-all">
+
+                  {request.upi_id}
+
+                </p>
+
+              </div>
+
+              <div className="rounded-2xl bg-black/30 border border-red-500/10 p-4">
+
+                <p className="text-gray-500 text-xs sm:text-sm mb-1">
+
+                  REQUEST TIME
+
+                </p>
+
+                <p className="text-gray-200 text-sm sm:text-base">
+
+                  {new Date(
+                    request.created_at
+                  ).toLocaleString()}
+
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* REASON */}
+            {
+
+              request.reason && (
+
+                <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/20 p-4">
+
+                  <p className="text-yellow-400 font-bold mb-1">
+
+                    Retry Reason
+
+                  </p>
+
+                  <p className="text-gray-300 break-words">
+
                     {request.reason}
 
                   </p>
 
-                )
+                </div>
 
-              }
+              )
 
-              <p className="text-gray-500 text-sm">
+            }
 
-                {new Date(
-                  request.created_at
-                ).toLocaleString()}
+            {/* ACTION BUTTONS */}
+            {
 
-              </p>
+              request.status === "pending" && (
 
-              {
+                <div
+                  className="
+                  flex
+                  flex-col sm:flex-row
+                  gap-3 sm:gap-4
+                  mt-2
+                  "
+                >
 
-                request.status === "pending" && (
+                  {/* APPROVE */}
+                  <button
 
-                  <div
+                    onClick={() =>
+
+                      approveRequest(
+                        request._id
+                      )
+
+                    }
+
                     className="
+                    w-full sm:w-auto justify-center
                     flex
-                    gap-4
-                    mt-4
+                    items-center
+                    gap-2
+                    bg-green-500
+                    hover:bg-green-600
+                    text-black
+                    px-5
+                    py-3
+                    rounded-2xl
+                    font-black
+                    transition-all
                     "
+
                   >
 
-                    {/* APPROVE */}
-                    <button
+                    <CheckCircle size={20} />
 
-                      onClick={() =>
+                    Approve
 
-                        approveRequest(
-                          request._id
-                        )
+                  </button>
 
-                      }
+                  {/* RETRY */}
+                  <button
 
-                      className="
-                      flex
-                      items-center
-                      gap-2
-                      bg-green-500
-                      text-black
-                      px-5
-                      py-3
-                      rounded-2xl
-                      font-black
-                      "
+                    onClick={() =>
 
-                    >
+                      retryRequest(
+                        request._id
+                      )
 
-                      <CheckCircle size={20} />
+                    }
 
-                      Approve
+                    className="
+                    w-full sm:w-auto justify-center
+                    flex
+                    items-center
+                    gap-2
+                    bg-red-500
+                    hover:bg-red-600
+                    text-white
+                    px-5
+                    py-3
+                    rounded-2xl
+                    font-black
+                    transition-all
+                    "
 
-                    </button>
+                  >
 
-                    {/* RETRY */}
-                    <button
+                    <RotateCcw size={20} />
 
-                      onClick={() =>
+                    Retry
 
-                        retryRequest(
-                          request._id
-                        )
+                  </button>
 
-                      }
+                </div>
 
-                      className="
-                      flex
-                      items-center
-                      gap-2
-                      bg-red-500
-                      text-white
-                      px-5
-                      py-3
-                      rounded-2xl
-                      font-black
-                      "
+              )
 
-                    >
-
-                      <RotateCcw size={20} />
-
-                      Retry
-
-                    </button>
-
-                  </div>
-
-                )
-
-              }
-
-            </div>
+            }
 
           </div>
 
-        ))
+        </div>
 
-      }
+      ))
 
-    </div>
+    }
 
-  );
+  </div>
+
+);
 
 };
 
