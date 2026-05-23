@@ -271,10 +271,10 @@ export default function Register() {
       {/* Form */}
       <form
         onSubmit={handleRegister}
-        className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-yellow-500/20 rounded-[35px] p-8 shadow-[0_0_60px_rgba(255,215,0,0.12)]"
+        className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-yellow-500/20 rounded-[35px] sm:p-8 p-3 sm:m-0 mt-2  shadow-[0_0_60px_rgba(255,215,0,0.12)]"
       >
 
-        <h1 className="text-5xl font-black text-center mb-3 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
+        <h1 className="sm:text-5xl text-[26px] font-black text-center sm:mb-3 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
           CREATE ACCOUNT
         </h1>
 
@@ -304,7 +304,7 @@ export default function Register() {
               }}
             />
 
-            <div className="w-28 h-28 rounded-full border-4 border-yellow-400 overflow-hidden bg-black/40 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.25)] relative">
+            <div className="sm:w-28 sm:h-28 w-24 h-24 rounded-full border-4 border-yellow-400 overflow-hidden bg-black/40 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.25)] relative">
 
               {/* DEFAULT IMAGE */}
               <img
@@ -442,7 +442,7 @@ export default function Register() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black text-lg hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,215,0,0.3)]"
+          className="w-full sm:py-4 py-2 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black text-lg hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,215,0,0.3)]"
         >
 
           {loading ? "SENDING OTP..." : "REGISTER"}

@@ -210,17 +210,17 @@ const AdminDashboard = () => {
     <div>
 
       {/* TOP */}
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10">
 
         <div>
 
-          <h1 className="text-5xl font-black text-yellow-400">
+          <h1 className="text-3xl sm:text-5xl font-black text-yellow-400 leading-tight">
 
             ADMIN DASHBOARD
 
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
 
             Manage tournaments, payments and users
 
@@ -228,8 +228,8 @@ const AdminDashboard = () => {
 
         </div>
 
-        <div className="rounded-2xl bg-green-500/10 border border-green-500/20 px-5 py-3 flex items-center gap-3">
-
+        <div className="w-full sm:w-auto rounded-2xl bg-green-500/10 border border-green-500/20 px-4 sm:px-5 py-3 flex items-center justify-center gap-3">
+          
           <Clock3 className="text-green-400" />
 
           <span className="text-green-400 font-bold">
@@ -243,7 +243,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
 
         {stats.map((stat, index) => {
 
@@ -258,7 +258,7 @@ const AdminDashboard = () => {
               bg-white/5
               border
               border-yellow-500/10
-              p-6
+              p-4 sm:p-6
               backdrop-blur-xl
               hover:scale-105
               transition-all
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
 
               </h3>
 
-              <h1 className="text-5xl font-black text-yellow-400">
+              <h1 className="text-3xl sm:text-5xl font-black text-yellow-400 break-words">
 
                 {stat.value}
 
@@ -297,13 +297,13 @@ const AdminDashboard = () => {
       {/* QUICK ACTIONS */}
       <div className="mt-14">
 
-        <h2 className="text-3xl font-black text-yellow-400 mb-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-yellow-400 mb-5 sm:mb-6">
 
           QUICK ACTIONS
 
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
 
           <button
 
@@ -311,13 +311,13 @@ const AdminDashboard = () => {
 
             className="
             rounded-3xl
-            p-6
+            p-4 sm:p-6
             bg-gradient-to-br
             from-yellow-400
             to-orange-500
             text-black
             font-black
-            text-xl
+            text-base sm:text-xl
             hover:scale-105
             transition-all
             duration-300
@@ -334,14 +334,14 @@ const AdminDashboard = () => {
             onClick={() => navigate("/admin/add-cash")}
             className="
             rounded-3xl
-            p-6
+            p-4 sm:p-6
             bg-white/5
             border
             border-yellow-500/10
             hover:border-yellow-400/30
             transition-all
             duration-300
-            text-xl
+            text-base sm:text-xl
             font-black
             "
 
@@ -356,14 +356,14 @@ const AdminDashboard = () => {
             onClick={() => navigate("/admin/withdraw")}
             className="
             rounded-3xl
-            p-6
+            p-4 sm:p-6
             bg-white/5
             border
             border-yellow-500/10
             hover:border-yellow-400/30
             transition-all
             duration-300
-            text-xl
+            text-base sm:text-xl
             font-black
             "
 
@@ -378,14 +378,14 @@ const AdminDashboard = () => {
             onClick={() => navigate("/admin/users")}
             className="
             rounded-3xl
-            p-6
+            p-4 sm:p-6
             bg-white/5
             border
             border-yellow-500/10
             hover:border-yellow-400/30
             transition-all
             duration-300
-            text-xl
+            text-base sm:text-xl
             font-black
             "
 
@@ -405,7 +405,7 @@ const AdminDashboard = () => {
 
         <h2
           className="
-          text-3xl
+          text-2xl sm:text-3xl
           font-black
           text-yellow-400
           mb-6
@@ -464,10 +464,10 @@ const AdminDashboard = () => {
                 bg-white/5
                 border
                 border-yellow-500/10
-                p-5
-                flex
-                items-center
-                justify-between
+                p-4 sm:p-5
+                flex flex-col 
+                sm:flex-row sm:items-center 
+                justify-between gap-4
                 cursor-pointer
                 hover:bg-yellow-500/10
                 transition-all
@@ -480,7 +480,7 @@ const AdminDashboard = () => {
                   <h3
                     className="
                     font-black
-                    text-xl
+                    text-lg sm:text-xl
                     text-white
                     "
                   >
@@ -511,7 +511,7 @@ const AdminDashboard = () => {
 
                 </div>
 
-                <div className="text-right">
+                <div className="sm:text-right">
 
                   {
 
@@ -527,7 +527,7 @@ const AdminDashboard = () => {
 
                         </p>
 
-                        <p className="text-gray-400">
+                        <p className="text-gray-400 break-all">
 
                           ID:
                           {" "}

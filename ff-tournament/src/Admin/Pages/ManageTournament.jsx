@@ -409,15 +409,15 @@ const ManageTournament = () => {
     <div>
 
       {/* TOP */}
-      <div className="mb-10">
+      <div className="mb-6 sm:mb-10">
 
-        <h1 className="text-5xl font-black text-yellow-400">
+        <h1 className="text-2xl sm:text-5xl font-black text-yellow-400">
 
           MANAGE TOURNAMENTS
 
         </h1>
 
-        <p className="text-gray-500 mt-2">
+        <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
 
           Control tournaments, rooms and results
 

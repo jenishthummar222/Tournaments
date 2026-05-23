@@ -70,23 +70,60 @@ const AdminLayout = () => {
 
   return (
 
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-black text-white flex relative scrollbar-hide">
+      {/* MOBILE TOPBAR */}
+      <div className="fixed top-0 left-0 right-0 z-50 sm:hidden flex items-center justify-between px-4 py-4 bg-black/80 backdrop-blur-xl border-b border-yellow-500/10 scrollbar-hide">
+
+        <div className="flex items-center gap-3 scrollbar-hide">
+
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+            <ShieldCheck className="text-black w-5 h-5" />
+          </div>
+
+          <div>
+            <h1 className="text-lg font-black text-yellow-400">
+              ADMIN PANEL
+            </h1>
+          </div>
+
+        </div>
+
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="text-yellow-400"
+        >
+          {
+            sidebarOpen
+            ? <></>
+            : <Menu className="w-7 h-7" />
+          }
+        </button>
+
+      </div>
 
       {/* SIDEBAR */}
       <div
         className={`
+        fixed sm:relative top-0 left-0 z-50 h-screen
+        ${
+          sidebarOpen
+            ? "translate-x-0"
+            : "-translate-x-full sm:translate-x-0"
+        }
         ${
           sidebarOpen
             ? "w-72"
-            : "w-24"
+            : "sm:w-24"
         }
         transition-all duration-300
         border-r border-yellow-500/10
-        bg-white/5 backdrop-blur-xl
+        bg-black/95 sm:bg-white/5
+        backdrop-blur-xl
         p-6
+        overflow-y-auto
         `}
       >
-
+        
         {/* TOP */}
         <div className="flex items-center justify-between mb-10">
 
@@ -144,7 +181,15 @@ const AdminLayout = () => {
 
               key={index}
 
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+
+                navigate(item.path);
+
+                if (window.innerWidth < 640) {
+                  setSidebarOpen(false);
+                }
+
+              }}
 
               className={`
               w-full
@@ -175,8 +220,18 @@ const AdminLayout = () => {
 
       </div>
 
+      {/* MOBILE OVERLAY */}
+        {
+          sidebarOpen && (
+            <div
+              onClick={() => setSidebarOpen(false)}
+              className="fixed inset-0 bg-black/70 z-40 sm:hidden"
+            />
+          )
+        }
+
       {/* RIGHT CONTENT */}
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 sm:p-8 overflow-y-auto sm:ml-0 mt-20 sm:mt-0">
 
         <Outlet />
 

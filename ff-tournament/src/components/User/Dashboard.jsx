@@ -12,7 +12,7 @@ import {
   Medal,
   Swords,
   Flame,
-  Star,
+  Star,Menu, X 
 } from "lucide-react";
 
 import {
@@ -91,7 +91,9 @@ const Dashboard = () => {
   const [joining, setJoining] = useState(false);
 
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-    
+
+  const [menuOpen, setMenuOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("wallet");
    
   // Update Name
   const updateName = async () => {
@@ -1068,67 +1070,85 @@ const Dashboard = () => {
       {/* Main */}
       <div className="relative z-10">
 
-        {/* Navbar */}
-        <nav className="flex items-center justify-between px-6 py-5 border-b border-yellow-500/10 backdrop-blur-md bg-black/30 sticky top-0 z-50">
+        <nav className="relative flex items-center justify-between px-4 sm:px-6 py-4 border-b border-yellow-500/10 backdrop-blur-md bg-black/30 sticky top-0 z-50">
 
+          {/* LEFT SIDE */}
           <div className="flex items-center gap-3">
 
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
-
-              <img src={logo} className="text-black w-12 h-12" />
-
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
+              <img src={logo} className="w-10 h-10 sm:w-12 sm:h-12" />
             </div>
 
-            <h1 className="text-3xl font-black bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-3xl font-black bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent">
               FF ARENA
             </h1>
+          </div>
+
+          {/* RIGHT SIDE (MOBILE MENU BUTTON) */}
+          <button
+            className="sm:hidden text-white"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X /> : <Menu />}
+          </button>
+
+          {/* DESKTOP ACTIONS */}
+          <div className="hidden sm:flex items-center gap-4">
+
+            {user?.is_admin && (
+              <button
+                onClick={() => navigate("/admin")}
+                className="px-5 py-2 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300"
+              >
+                👑 ADMIN
+              </button>
+            )}
+
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-red-500/20 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all duration-300"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </button>
 
           </div>
-          {
-            user?.is_admin && (
+
+          {/* MOBILE DROPDOWN MENU */}
+          {menuOpen && (
+            <div className="absolute top-full right-4 mt-3 w-52 bg-black/90 border border-yellow-500/20 rounded-2xl p-4 flex flex-col gap-3 sm:hidden z-50">
+
+              {user?.is_admin && (
+                <button
+                  onClick={() => {
+                    navigate("/admin");
+                    setMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-yellow-500/20 text-yellow-400 font-bold"
+                >
+                  👑 Admin Panel
+                </button>
+              )}
 
               <button
-
-                onClick={() => navigate("/admin")}
-
-                className="
-                px-5 py-2
-                rounded-2xl
-                bg-gradient-to-r
-                from-yellow-400
-                to-orange-500
-                text-black
-                font-black
-                shadow-[0_0_25px_rgba(255,215,0,0.5)]
-                hover:scale-105
-                transition-all
-                duration-300
-                "
-
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                }}
+                className="px-4 py-2 rounded-xl bg-red-500/20 text-red-400 font-bold flex items-center gap-2"
               >
-
-                👑 ADMIN PANEL
-
+                <LogOut className="w-4 h-4" />
+                Logout
               </button>
 
-            )
-          }
-
-          <button
-            onClick={logout}
-            className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-red-500/20 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all duration-300"
-          >
-
-            <LogOut className="w-5 h-5" />
-
-            Logout
-
-          </button>
+            </div>
+            
+          )}
 
         </nav>
 
         {/* Profile */}
-        <section className="max-w-7xl mx-auto px-6 py-10 scrollbar-hide overflow-y-scroll">
+        <section className="max-w-7xl mx-auto sm:px-6 sm:py-10 px-3 py-5 scrollbar-hide overflow-y-scroll">
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 scrollbar-hide overflow-y-scroll">
 
@@ -1140,7 +1160,7 @@ const Dashboard = () => {
                 <div className="relative w-36 h-36 mb-5 group">
 
                   {/* IMAGE */}
-                  <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-yellow-400 shadow-[0_0_40px_rgba(255,215,0,0.35)]">
+                  <div className="sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-yellow-400 shadow-[0_0_40px_rgba(255,215,0,0.35)]">
 
                     <img
                       src={
@@ -1189,12 +1209,12 @@ const Dashboard = () => {
                         onChange={(e) =>
                           setNewName(e.target.value)
                         }
-                        className="bg-black/40 border border-yellow-500/20 rounded-2xl ml-5 px-2 py-2 text-yellow-400 text-[20px] font-black outline-none"
+                        className="bg-black/40 border border-yellow-500/20 rounded-2xl ml-5 px-2 py-2  text-yellow-400 sm:text-[20px] font-black outline-none"
                       />
 
                     ) : (
 
-                      <h2 className="text-4xl font-black text-yellow-400">
+                      <h2 className="sm:text-4xl text-2xl font-black text-yellow-400">
 
                         {user.name}
 
@@ -1217,7 +1237,7 @@ const Dashboard = () => {
                       }
 
                     }}
-                    className="bg-yellow-400 hover:bg-yellow-300 text-black px-1 py-1 rounded-full font-bold transition-all duration-300"
+                    className="bg-yellow-400 hover:bg-yellow-300 text-black px-1 py-1 rounded-full sm:font-bold  transition-all duration-300"
                   >
 
                     {editingName ? "✔" : "✏️"}
@@ -1242,7 +1262,8 @@ const Dashboard = () => {
                     ${rankColor}
                     text-black
                     font-black
-                    text-lg
+                    sm:text-lg
+                    text-base
                     shadow-[0_0_30px_rgba(255,215,0,0.35)]
 
                   `}
@@ -1251,30 +1272,252 @@ const Dashboard = () => {
                   🔥 {Prorank}
 
                 </div>
-
+                    
               </div>
 
             </div>
 
+            <div className="fixed bottom-0 left-0 right-0 sm:hidden z-50 bg-black/80 backdrop-blur-xl border-t border-yellow-500/10 flex justify-around py-3">
+
+              <button
+                onClick={() => setActiveTab("wallet")}
+                className={`flex flex-col items-center text-xs transition-all duration-300 ${
+                  activeTab === "wallet"
+                    ? "text-yellow-400 scale-110 drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]"
+                    : "text-gray-400"
+                }`}
+              >
+                💰
+                <span className="mt-1">Wallet</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab("matches")}
+                className={`flex flex-col items-center text-xs transition-all duration-300 ${
+                  activeTab === "matches"
+                    ? "text-red-400 scale-110 drop-shadow-[0_0_10px_rgba(255,0,0,0.7)]"
+                    : "text-gray-400"
+                }`}
+              >
+                🎮
+                <span className="mt-1">Matches</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab("wins")}
+                className={`flex flex-col items-center text-xs transition-all duration-300 ${
+                  activeTab === "wins"
+                    ? "text-yellow-300 scale-110 drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]"
+                    : "text-gray-400"
+                }`}
+              >
+                🏆
+                <span className="mt-1">Wins</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab("history")}
+                className={`flex flex-col items-center text-xs transition-all duration-300 ${
+                  activeTab === "history"
+                    ? "text-blue-400 scale-110 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]"
+                    : "text-gray-400"
+                }`}
+              >
+                📜
+                <span className="mt-1">History</span>
+              </button>
+
+            </div>
+            <div className="sm:hidden">
+              {/* Wallet */}
+              {activeTab === "wallet" && (
+                <div
+                  onClick={() =>
+                    setShowWalletHistory(true)
+                  }
+                  className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-4 sm:p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-5">
+
+                    <Wallet className="text-yellow-400 sm:w-10 sm:h-10 w-7 h-7" />
+
+                    <span className="text-green-400 font-bold">
+                      HISTORY
+                    </span>
+
+                  </div>
+
+                  <h3 className="text-gray-400 text-base mb-2">
+                    Wallet Balance
+                  </h3>
+
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-yellow-400">
+                    ₹{user.wallet || 0}
+                  </h1>
+
+                </div>
+              )}
+              
+              {/* Matches */}
+              {activeTab === "matches" && (
+                <div className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300">
+
+                  <div className="flex items-center justify-between mb-5">
+
+                    <Swords className="text-red-400 sm:w-10 sm:h-10 w-7 h-7" />
+
+                    <Flame className="text-orange-400 w-6 h-6 animate-pulse" />
+
+                  </div>
+
+                  <h3 className="text-gray-400 text-base mb-2">
+                    Matches Played
+                  </h3>
+
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white">
+                    {user.matches || 0}
+                  </h1>
+
+                </div>
+              )}
+
+              {/* Wins */}
+              {activeTab === "wins" && (
+                <div className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300">
+
+                  <div className="flex items-center justify-between mb-5">
+
+                    <Trophy className="text-yellow-400 sm:w-10 sm:h-10 w-7 h-7" />
+
+                    <Star className="text-yellow-300 w-6 h-6 animate-spin" />
+
+                  </div>
+
+                  <h3 className="text-gray-400 text-base mb-2">
+                    Total Wins
+                  </h3>
+
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-yellow-400">
+                    {user.wins || 0}
+                  </h1>
+
+                </div>
+              )}
+
+              {/* Match History */}
+              {activeTab === "history" && (
+                <div className="rounded-[35px] border border-yellow-500/10 bg-white/5 backdrop-blur-xl p-5 shadow-[0_0_50px_rgba(255,215,0,0.08)]">
+
+                  <div className="flex items-center justify-between mb-5">
+
+                    <h2 className="sm:text-4xl text-[25px] font-black text-yellow-400">
+                      RECENT MATCHES
+                    </h2>
+
+                    <Target className="text-red-400 w-6 h-6 " />
+
+                  </div>
+
+                  <div className="space-y-5">
+
+                    {matchHistory.length === 0 ? (
+
+                      <div className="text-center py-10 text-gray-500">
+
+                        No Match History
+
+                      </div>
+
+                    ) : (
+
+                      <>
+                      
+                        {matchHistory.map((match, index) => (
+
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-black/30 border border-gray-800 hover:border-yellow-500/20 transition-all duration-300"
+                          >
+
+                            <div>
+
+                              <h3 className="text-2xl font-bold text-white mb-1">
+
+                                {match.tournament_title}
+
+                              </h3>
+
+                              <p className="text-gray-400">
+
+                                Total Point #{match.total_points} •
+                                {match.kills} Kills
+
+                              </p>
+
+                            </div>
+
+                            <div className="text-right">
+
+                              <div
+                                className={`font-black text-[17px] ${
+                                  match.result === "WON"
+                                    ? "text-green-400"
+                                    : "text-red-400"
+                                }`}
+                              >
+
+                                {match.result}
+
+                              </div>
+
+                              <div className="text-gray-500">
+
+                                ₹{match.win_amount}
+
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        ))}
+
+                        {/* NOTE */}
+                        <p className="text-center text-gray-500 text-[10px] mt-5">
+
+                          ⚠ Match history will be automatically removed after 7 days.
+
+                        </p>
+
+                      </>
+
+                    )}
+
+                  </div>
+
+              </div>
+              )}
+            </div>            
+            
             {/* RIGHT */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="hidden sm:block lg:col-span-2 space-y-6 sm:space-y-8">
 
               {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
                 {/* Wallet */}
                 <div
                   onClick={() =>
                     setShowWalletHistory(true)
                   }
-                  className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300 cursor-pointer"
-                >
+                  className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-4 sm:p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                >                
                   <div className="flex items-center justify-between mb-5">
 
-                    <Wallet className="text-yellow-400 w-10 h-10" />
+                    <Wallet className="text-yellow-400 sm:w-10 sm:h-10 w-7 h-7" />
 
                     <span className="text-green-400 font-bold">
-                      LIVE
+                      HISTORY
                     </span>
 
                   </div>
@@ -1283,7 +1526,7 @@ const Dashboard = () => {
                     Wallet Balance
                   </h3>
 
-                  <h1 className="text-5xl font-black text-yellow-400">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-yellow-400">
                     ₹{user.wallet || 0}
                   </h1>
 
@@ -1426,35 +1669,35 @@ const Dashboard = () => {
               </div>              
 
             </div>            
-
+            
           </div>
           
           {/* Top Dashboard Grid */}
           <div className=" mt-8 grid grid-cols-1 xl:grid-cols-3 gap-8">
 
            {/* LEVEL */}
-            <div className="rounded-[30px] bg-white/5 border border-cyan-500/10 p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300">
+            <div className="rounded-[30px] bg-white/5 border border-cyan-500/10 sm:p-6 p-3 backdrop-blur-xl hover:scale-105 transition-all duration-300">
 
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between sm:mb-5 mb-3">
 
-                <Medal className="text-cyan-400 w-10 h-10" />
+                <Medal className="text-cyan-400 sm:w-10 sm:h-10 w-5 h-5" />
 
-                <span className="text-cyan-300 font-bold">
+                <span className="text-cyan-300 sm:font-bold">
                   LEVEL
                 </span>
 
               </div>
 
-              <h3 className="text-gray-400 text-lg mb-2">
+              <h3 className="text-gray-400 sm:text-lg text-base mb-2">
                 Player Level
               </h3>
 
-              <h1 className="text-5xl font-black text-cyan-400 mb-4">
+              <h1 className="sm:text-5xl text-4xl font-black text-cyan-400 mb-4">
                 {level}
               </h1>
 
               {/* XP BAR */}
-              <div className="w-full h-4 rounded-full bg-black/40 overflow-hidden">
+              <div className="w-full sm:h-4 h-2 rounded-full bg-black/40 overflow-hidden">
 
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-500"
@@ -1465,28 +1708,28 @@ const Dashboard = () => {
 
               </div>
 
-              <p className="text-gray-500 text-sm mt-2">
+              <p className="text-gray-500 sm:text-sm text-[10px] mt-2">
                 {currentXP}/{nextLevelXP} XP
               </p>
 
             </div>
 
             {/* RANK */}
-            <div className="rounded-[30px] bg-white/5 border border-yellow-500/10 p-6 backdrop-blur-xl hover:scale-105 transition-all duration-300">
+            <div className="rounded-[30px] bg-white/5 border border-yellow-500/10 sm:p-6 p-3 backdrop-blur-xl hover:scale-105 transition-all duration-300">
 
               <div className="flex items-center justify-between mb-5">
 
-                <Trophy className="text-yellow-400 w-10 h-10" />
+                <Trophy className="text-yellow-400 sm:w-10 sm:h-10 w-5 h-5" />
 
-                <Star className="text-yellow-300 w-6 h-6 animate-spin" />
+                <Star className="text-yellow-300 sm:w-6 sm:h-6 w-5 h-5 animate-spin" />
 
               </div>
 
-              <h3 className="text-gray-400 text-lg mb-2">
+              <h3 className="text-gray-400 sm:text-lg text-base mb-2">
                 Current Rank
               </h3>
 
-              <h1 className="text-5xl font-black text-yellow-400">
+              <h1 className="sm:text-5xl text-3xl font-black text-yellow-400">
                 {rank}
               </h1>
 
@@ -1497,27 +1740,27 @@ const Dashboard = () => {
             </div>
 
             {/* QUICK ACTIONS */}
-            <div className="rounded-[35px] border border-red-500/20 bg-gradient-to-br from-red-500/10 to-orange-500/10 backdrop-blur-xl p-8 shadow-[0_0_50px_rgba(255,0,0,0.12)]">
+            <div className="rounded-[35px] border border-red-500/20 bg-gradient-to-br from-red-500/10 to-orange-500/10 backdrop-blur-xl sm:p-8 p-4 shadow-[0_0_50px_rgba(255,0,0,0.12)]">
 
-              <h2 className="text-3xl font-black text-red-400 mb-6">
+              <h2 className="sm:text-3xl text-2xl font-black text-red-400 mb-6">
                 QUICK ACTIONS
               </h2>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 sm:gap-4 gap-2">
 
                 <button onClick={() => setShowAddCashModal(true)}
-                  className="py-4 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-black font-black hover:scale-105 transition-all">
+                  className="sm:py-4 py-2 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-black font-black hover:scale-105 transition-all">
                   ADD CASH
                 </button>
 
                 <button onClick={() => setShowWithdrawModal(true)}
-                 className="py-4 rounded-2xl bg-gradient-to-r from-red-400 to-orange-500 text-black font-black hover:scale-105 transition-all">
+                 className="sm:py-4 py-2 rounded-2xl bg-gradient-to-r from-red-400 to-orange-500 text-black font-black hover:scale-105 transition-all">
                   WITHDRAW
                 </button>
 
                 <button
                   onClick={() => setSelectedTab("my")}
-                  className={`p-4 rounded-2xl font-bold ${
+                  className={`sm:p-4 p-2 rounded-2xl font-bold ${
                     selectedTab === "my"
                       ? "bg-green-500 text-black"
                       : "bg-white/10"
@@ -1528,7 +1771,7 @@ const Dashboard = () => {
 
                 <button
                   onClick={() => setSelectedTab("all")}
-                  className={`p-4 rounded-2xl font-bold ${
+                  className={`sm:p-4 p-2 rounded-2xl font-bold ${
                     selectedTab === "all"
                       ? "bg-blue-500 text-black"
                       : "bg-white/10"
@@ -1616,7 +1859,7 @@ const Dashboard = () => {
 
           )}
 
-          <div className="mt-8 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+          <div className="sm:mt-8 mt-4 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
 
             {gameModes.map((mode, index) => (
 
@@ -1624,7 +1867,7 @@ const Dashboard = () => {
                 key={index}
                 onClick={() => setSelectedMode(mode)}
                 className={`
-                  px-6 py-3 rounded-2xl whitespace-nowrap font-bold transition-all duration-300
+                  sm:px-6 px-3 py-2 sm:py-3 rounded-2xl whitespace-nowrap sm:font-bold  transition-all duration-300
                   ${
                     selectedMode === mode
                       ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
@@ -1642,12 +1885,12 @@ const Dashboard = () => {
           </div>
 
           {/* TOURNAMENT SECTION */}
-          <div className="mt-8 rounded-[35px] border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl p-8 shadow-[0_0_50px_rgba(180,0,255,0.12)]">
+          <div className="sm:mt-8 mt-4 rounded-[35px] border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl sm:p-8 p-4 shadow-[0_0_50px_rgba(180,0,255,0.12)]">
 
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between sm:mb-8 mb-4">
 
-              <h2 className="text-4xl font-black text-purple-300">
+              <h2 className="sm:text-4xl text-2xl font-black text-purple-300">
 
                 {selectedTab === "my"
                   ? "MY TOURNAMENTS"
@@ -1655,7 +1898,7 @@ const Dashboard = () => {
 
               </h2>
 
-              <Trophy className="w-10 h-10 text-yellow-400 animate-pulse" />
+              <Trophy className="sm:w-10 sm:h-10 w-5 h-5 text-yellow-400 animate-pulse" />
 
             </div>
 
@@ -1685,7 +1928,7 @@ const Dashboard = () => {
             )}
 
             {/* TOURNAMENTS */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 sm:gap-6 gap-3">
 
               {matchesToShow.map((tournament, index) => {
                 // Status
@@ -1719,7 +1962,7 @@ const Dashboard = () => {
 
                   <div
                     key={index}
-                    className="relative overflow-hidden rounded-3xl border border-purple-500/10 bg-black/30 p-6 hover:scale-[1.02] transition-all duration-300 hover:border-purple-400/30">
+                    className="relative overflow-hidden rounded-3xl border border-purple-500/10 bg-black/30 sm:p-6 p-3 hover:scale-[1.02] transition-all duration-300 hover:border-purple-400/30">
 
                     {/* Glow */}
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10 opacity-0 hover:opacity-100 transition-all duration-500" />
@@ -1729,13 +1972,13 @@ const Dashboard = () => {
                       {/* Header */}
                       <div className="flex items-center justify-between mb-5">
 
-                        <h3 className="text-3xl font-black text-white">
+                        <h3 className="sm:text-3xl text-[20px] font-black text-white">
                           {tournament.title}
                         </h3>
 
                         <span
                           className={`
-                            px-4 py-2 rounded-full text-sm font-bold
+                            sm:px-4 sm:py-2 px-2 py-1 rounded-full sm:text-sm text-[10px] font-bold
                             ${
                               
                               status === "LIVE"
@@ -1760,7 +2003,7 @@ const Dashboard = () => {
                       </div>
 
                       {/* Info */}
-                      <div className="space-y-3 text-gray-300 mb-6">
+                      <div className="sm:space-y-3 space-y-2 text-gray-300 sm:mb-6 mb-3">
 
                         <p>
                           🎟 Entry Fee:
@@ -1791,7 +2034,7 @@ const Dashboard = () => {
 
                         <p>
                           ⏰ Starts At:
-                          <span className="ml-2 text-cyan-400 font-bold">
+                          <span className="ml-2 text-cyan-400 sm:text-[17px] text-[14px] font-bold">
 
                             {tournament.match_time
                               ? new Date(
@@ -1812,13 +2055,13 @@ const Dashboard = () => {
                       {/* ROOM DETAILS ONLY FOR MY MATCHES */}
                       {selectedTab === "my" && (
 
-                        <div className="mb-6">
+                        <div className="sm:mb-6 mb-3">
 
                           {status === "COMPLETED" ? (
 
-                            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-5 text-center">
+                            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 sm:p-5 p-2 text-center">
 
-                              <p className="text-red-400 font-bold text-lg">
+                              <p className="text-red-400 font-bold sm:text-lg text-[15px]">
                                 Match Completed
                               </p>
 
@@ -1826,9 +2069,9 @@ const Dashboard = () => {
 
                           ) : status === "CANCELLED" ? (
 
-                            <div className="rounded-2xl bg-gray-500/10 border border-gray-500/20 p-5 text-center">
+                            <div className="rounded-2xl bg-gray-500/10 border border-gray-500/20 sm:p-5 p-2 text-center">
 
-                              <p className="text-gray-300 font-bold text-lg">
+                              <p className="text-gray-300 font-bold sm:text-lg text-[15px]">
                                 Match Cancelled
                               </p>
 
@@ -1836,33 +2079,33 @@ const Dashboard = () => {
 
                           ) :canShowRoom ? (
 
-                            <div className="rounded-2xl bg-green-500/10 border border-green-500/20 p-5">
+                            <div className="rounded-2xl bg-green-500/10 border border-green-500/20 p-2 sm:p-5">
 
-                              <p className="text-green-400 font-black mb-4">
+                              <p className="text-green-400 font-black mb-2 sm:mb-4">
                                 ROOM DETAILS UNLOCKED
                               </p>
 
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-2 sm:gap-4 gap-2">
 
-                                <div className="rounded-2xl bg-black/40 border border-yellow-500/20 p-4 text-center">
+                                <div className="rounded-2xl bg-black/40 border border-yellow-500/20 sm:p-4 p-2 text-center">
 
-                                  <p className="text-gray-500 text-sm mb-1">
+                                  <p className="text-gray-500 sm:text-sm text-[14px] mb-1">
                                     ROOM ID
                                   </p>
 
-                                  <h2 className="text-2xl font-black text-yellow-400">
+                                  <h2 className="sm:text-2xl text-[15px] font-black text-yellow-400 select-text">
                                     {tournament.room_id || "WAIT.."}
                                   </h2>
 
                                 </div>
 
-                                <div className="rounded-2xl bg-black/40 border border-green-500/20 p-4 text-center">
+                                <div className="rounded-2xl bg-black/40 border border-green-500/20 sm:p-4 p-2 text-center">
 
-                                  <p className="text-gray-500 text-sm mb-1">
+                                  <p className="text-gray-500 sm:text-sm text-[14px] mb-1">
                                     PASSWORD
                                   </p>
 
-                                  <h2 className="text-2xl font-black text-green-400">
+                                  <h2 className="sm:text-2xl text-[15px] font-black text-green-400 select-text">
                                     {tournament.room_password || "WAIT.."}
                                   </h2>
 
@@ -1874,9 +2117,9 @@ const Dashboard = () => {
 
                           ) : (
 
-                            <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/20 p-5 text-center">
+                            <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/20 sm:p-5 p-2 text-center">
 
-                              <p className="text-yellow-400 font-bold text-lg">
+                              <p className="text-yellow-400 font-bold sm:text-lg text-[15px]">
 
                                 Room details will unlock
                                 10 minutes before match
@@ -1896,7 +2139,7 @@ const Dashboard = () => {
 
                         {selectedTab === "my" ? (
 
-                          <span className="px-5 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-bold">
+                          <span className="sm:px-5 sm:py-2 px-2 py-1 sm:text-[17px] text-[10px]  rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-bold">
 
                             JOINED ✅
 
@@ -1905,7 +2148,7 @@ const Dashboard = () => {
                         ) : (
 
                           <span
-                            className={`px-5 py-2 rounded-full font-bold border
+                            className={`sm:px-5 sm:py-2 px-2 py-1 sm:text-[17px] text-[10px]  rounded-full font-bold border
                               ${
                                 isJoinClosed || isCompleted
                                   ? "bg-red-500/10 border-red-500/20 text-red-400"
@@ -1931,7 +2174,7 @@ const Dashboard = () => {
                                 setShowModal(true);
 
                               }}
-                              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300"
+                              className="sm:px-6 sm:py-3 px-3 py-1 text-[15px] sm:text-[20px]  rounded-2xl bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300"
                             >
 
                               VIEW RESULT
@@ -1940,7 +2183,7 @@ const Dashboard = () => {
 
                           ) : (
 
-                            <div className="px-6 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 font-black">
+                            <div className="sm:px-6 sm:py-3 px-3 py-1 text-[15px] sm:text-[20px] rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 font-black">
 
                               MATCH OVER
 
@@ -1981,7 +2224,7 @@ const Dashboard = () => {
 
                             }}
 
-                            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black hover:scale-105 transition-all duration-300"
+                            className="sm:px-6 sm:py-3 px-3 py-1 text-[15px] sm:text-[20px] rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black hover:scale-105 transition-all duration-300"
                           >
 
                             VIEW MATCH
@@ -2065,7 +2308,7 @@ const Dashboard = () => {
 
             <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm scrollbar-hide flex items-center justify-center p-4 overflow-y-auto">
 
-              <div className="w-full max-w-2xl max-h-[90vh] rounded-[35px] bg-gray-900 border border-purple-500/20 p-8 relative scrollbar-hide overflow-y-scroll">
+              <div className="w-full max-w-2xl max-h-[90vh] rounded-[35px] bg-gray-900 border border-purple-500/20 p-4 sm:p-8 relative scrollbar-hide overflow-y-scroll">
               
                 {/* CLOSE */}
                 <button
@@ -2076,7 +2319,7 @@ const Dashboard = () => {
                 </button>
 
                 {/* TITLE */}
-                <h2 className="text-4xl font-black text-purple-300 mb-6">
+                <h2 className="sm:text-4xl text-2xl font-black text-purple-300 sm:mb-6 mb-3">
 
                   {selectedTournament.title}
 
@@ -2085,23 +2328,23 @@ const Dashboard = () => {
                 {/* PLAYER SLOT SECTION */}
                 {!isCompleted && joined && !hasTempResult &&(
 
-                  <div className="mb-6 rounded-[30px] border border-green-500/20 bg-gradient-to-br from-green-500/5 to-cyan-500/5 p-6">
+                  <div className="sm:mb-6 mb-3 rounded-[30px] border border-green-500/20 bg-gradient-to-br from-green-500/5 to-cyan-500/5 sm:p-6 p-2">
 
                     {/* HEADER */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between sm:mb-6 mb-3">
 
-                      <h2 className="text-3xl font-black text-green-400">
+                      <h2 className="sm:text-3xl text-[20px] font-black text-green-400">
                         PLAYER SLOTS
                       </h2>
 
-                      <div className="px-4 py-2 rounded-2xl bg-black/40 border border-green-500/20 text-green-300 font-bold text-sm">
+                      <div className="sm:px-4 sm:py-2 px-2 py-1 rounded-2xl bg-black/40 border border-green-500/20 text-green-300 font-bold text-[12px] sm:text-sm">
                         {playersList.length}/{totalSlots} Filled
                       </div>
 
                     </div>
 
                     {/* GRID */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 sm:gap-4 gap-2">
 
                       {Array.from({ length: totalSlots }, (_, i) => {
 
@@ -2132,7 +2375,7 @@ const Dashboard = () => {
 
                             className={`
                               relative overflow-hidden
-                              rounded-3xl border p-4 transition-all duration-300
+                              rounded-3xl border sm:p-4 pt-1 transition-all duration-300
 
                               ${player
                                 ? "bg-green-500/10 border-green-500/30 hover:scale-105"
@@ -2157,7 +2400,7 @@ const Dashboard = () => {
                               <>
 
                                 {/* ICON */}
-                                <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-r from-green-400 to-cyan-400 flex items-center justify-center text-black font-black text-xl mb-3">
+                                <div className="sm:w-14 sm:h-14 w-10 h-10 mx-auto rounded-full bg-gradient-to-r from-green-400 to-cyan-400 flex items-center justify-center text-black font-black text-xl mb-3">
 
                                   {player.team_name
                                     ? "👥"
@@ -2169,7 +2412,7 @@ const Dashboard = () => {
                                 {/* NAME */}
                                 <div className="text-center">
 
-                                  <h3 className="text-white font-black text-sm break-words">
+                                  <h3 className="text-white font-black sm:text-sm text-[14px] break-words">
 
                                     {player.team_name || player.name}
 
@@ -2178,7 +2421,7 @@ const Dashboard = () => {
                                   {/* TEAM INFO */}
                                   {!isSolo && hasMembers && (
 
-                                    <p className="text-cyan-300 text-xs mt-2">
+                                    <p className="text-cyan-200 sm:text-xs text-[10px] my-1 sm:mt-2">
                                       view members
                                     </p>
 
@@ -2190,9 +2433,9 @@ const Dashboard = () => {
 
                             ) : (
 
-                              <div className="py-6 text-center">
+                              <div className="sm:py-6 py-3 text-center">
 
-                                <div className="text-3xl mb-2 opacity-40">
+                                <div className="sm:text-3xl text-2xl mb-2 opacity-40">
                                   🎯
                                 </div>
 
@@ -2218,9 +2461,9 @@ const Dashboard = () => {
                 {/* TEAM MEMBERS POPUP */}
                 {selectedPlayer && !isSolo && (
 
-                  <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+                  <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center sm:p-4 p-2">
 
-                    <div className="w-full max-w-md rounded-[30px] bg-gray-900 border border-cyan-500/20 p-6 relative">
+                    <div className="w-full max-w-md rounded-[30px] bg-gray-900 border border-cyan-500/20 sm:p-6 p-2 relative">
 
                       {/* CLOSE */}
                       <button
@@ -2231,7 +2474,7 @@ const Dashboard = () => {
                       </button>
 
                       {/* TITLE */}
-                      <h2 className="text-3xl font-black text-cyan-400 mb-6 text-center">
+                      <h2 className="sm:text-3xl text-2xl font-black text-cyan-400 sm:mb-6 mb-3 text-center">
 
                         {selectedPlayer.team_name}
 
@@ -2244,16 +2487,16 @@ const Dashboard = () => {
 
                           <div
                             key={index}
-                            className="flex items-center gap-4 rounded-2xl bg-black/40 border border-cyan-500/20 p-4"
+                            className="flex items-center sm:gap-4 gap-6 rounded-2xl bg-black/40 border border-cyan-500/20 sm:p-4 p-3"
                           >
 
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-black">
+                            <div className="sm:w-10 w-5 sm:h-10 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-black font-black">
 
                               {index + 1}
 
                             </div>
 
-                            <div className="text-white font-bold">
+                            <div className="text-fuchsia-400 font-bold">
                               {member}
                             </div>
 
@@ -2272,26 +2515,26 @@ const Dashboard = () => {
                {/* RESULT SECTION CLEAN LOGIC */}
                 {hasTempResult ? (
 
-                  <div className="mb-6 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 p-5">
+                  <div className="mb-4 sm:mb-6 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 p-3 sm:p-5">
 
-                    <h2 className="text-2xl font-black text-yellow-400 mb-5">
+                    <h2 className="text-xl sm:text-2xl font-black text-yellow-400 mb-4 sm:mb-5">
                       MATCH RESULT
                     </h2>
                     {/* TOP 3 (IMPROVED UI ONLY) */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
 
                     {/* 🥇 1st PLACE (HERO CARD) */}
                     {selectedTournament.leaderboard_preview[0] && (
-                      <div className="relative bg-gradient-to-b from-yellow-400/20 to-yellow-900/10 border border-yellow-400/40 rounded-3xl p-6 text-center shadow-lg scale-105 overflow-hidden">
+                      <div className="relative bg-gradient-to-b from-yellow-400/20 to-yellow-900/10 border border-yellow-400/40 rounded-3xl sm:p-6 p-3 text-center shadow-lg sm:scale-105 overflow-hidden">
 
                         {/* glow effect */}
                         <div className="absolute inset-0 bg-yellow-400/10 blur-2xl"></div>
 
                         <div className="relative z-10">
 
-                          <div className="text-5xl mb-2">🥇</div>
+                          <div className="sm:text-5xl text-3xl sm:mb-2 mb-1">🥇</div>
 
-                          <div className="text-white font-black text-lg truncate">
+                          <div className="text-white font-black text-lg truncate max-w-[180px] mx-auto">
                             {selectedTournament.leaderboard_preview[0]["Game Name"]}
                           </div>
 
@@ -2316,11 +2559,11 @@ const Dashboard = () => {
 
                     {/* 🥈 2nd PLACE */}
                     {selectedTournament.leaderboard_preview[1] && (
-                      <div className="bg-gradient-to-b from-gray-400/20 to-gray-900/10 border border-gray-400/30 rounded-3xl p-5 text-center">
+                      <div className="bg-gradient-to-b from-gray-400/20 to-gray-900/10 border border-gray-400/30 rounded-3xl sm:p-5 p-2 text-center">
 
-                        <div className="text-4xl">🥈</div>
+                        <div className="sm:text-4xl text-2xl">🥈</div>
 
-                        <div className="text-white font-bold mt-2 truncate">
+                        <div className="text-white font-bold mt-2 truncate max-w-[180px] mx-auto">
                           {selectedTournament.leaderboard_preview[1]["Game Name"]}
                         </div>
 
@@ -2343,11 +2586,11 @@ const Dashboard = () => {
 
                     {/* 🥉 3rd PLACE */}
                     {selectedTournament.leaderboard_preview[2] && (
-                      <div className="bg-gradient-to-b from-orange-400/20 to-orange-900/10 border border-orange-400/30 rounded-3xl p-4 text-center">
+                      <div className="bg-gradient-to-b from-orange-400/20 to-orange-900/10 border border-orange-400/30 rounded-3xl sm:p-4 p-1 text-center">
 
-                        <div className="text-3xl">🥉</div>
+                        <div className="sm:text-3xl text-2xl">🥉</div>
 
-                        <div className="text-white font-bold mt-2 truncate">
+                        <div className="text-white font-bold mt-2 truncate max-w-[180px] mx-auto">
                           {selectedTournament.leaderboard_preview[2]["Game Name"]}
                         </div>
 
@@ -2360,11 +2603,11 @@ const Dashboard = () => {
                           </div>
 
                         <div className="text-red-400 text-sm mt-1">
-                          Kills: {selectedTournament.leaderboard_preview[1].Kills}
+                          Kills: {selectedTournament.leaderboard_preview[2].Kills}
                         </div>
                           
                           <div className="text-orange-300 mt-2">
-                            BOOYAH: {selectedTournament.leaderboard_preview[3]["BOOYAH"]}
+                            BOOYAH: {selectedTournament.leaderboard_preview[2]["BOOYAH"]}
                           </div>
                       </div>
                     )}
@@ -2374,9 +2617,9 @@ const Dashboard = () => {
                     {/* REMAINING PLAYERS */}
                   {selectedTournament.leaderboard_preview.length > 3 && (
 
-                    <div className="rounded-3xl border border-gray-700 bg-black/30 p-4">
+                    <div className="rounded-3xl border border-gray-700 bg-black/30 sm:p-4 p-2">
 
-                      <h3 className="text-gray-300 font-bold mb-3">
+                      <h3 className="text-gray-300 font-bold sm:mb-3 mb-2">
                         Remaining Players
                       </h3>
 
@@ -2386,8 +2629,8 @@ const Dashboard = () => {
 
                           <div
                             key={i}
-                            className="flex items-center justify-between p-3 rounded-xl border border-gray-700 bg-black/20 hover:bg-black/40 transition-all"
-                          >
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-gray-700 bg-black/20 hover:bg-black/40 transition-all"
+                            >
 
                             {/* LEFT SIDE */}
                             <div className="flex items-center gap-3 text-gray-300">
@@ -2396,26 +2639,26 @@ const Dashboard = () => {
                                 #{i + 4}
                               </span>
 
-                              <div className="truncate">
+                              <div className="truncate max-w-[180px] mx-auto">
                                 {p["Game Name"]}
                               </div>
 
                             </div>
 
                             {/* RIGHT SIDE STATS */}
-                            <div className="flex gap-4 text-sm">
+                            <div className="grid grid-cols-2 sm:flex gap-2 sm:gap-4 text-xs sm:text-sm">
 
-                              <span className="text-green-400 font-bold">
+                              <span className="px-2 py-1 rounded-lg bg-red-500/10 text-green-400 font-bold">
                                 BOOYAH: {p["BOOYAH"] || 0}
                               </span>
-                              <span className="text-red-400 font-bold">
-                                Position Point: {p["Position"] || 0}
+                              <span className="px-2 py-1 rounded-lg bg-red-500/10 text-red-400 font-bold">
+                                PP: {p["Position"] || 0}
                               </span>
-                              <span className="text-red-400 font-bold">
+                              <span className="px-2 py-1 rounded-lg bg-red-500/10 text-red-400 font-bold">
                                 Kills: {p["Kills"] || 0}
                               </span>
 
-                              <span className="text-yellow-300 font-bold">
+                              <span className="px-2 py-1 rounded-lg bg-red-500/10 text-yellow-400 font-bold">
                                 Total: {p.Total}
                               </span>
 
@@ -2473,7 +2716,7 @@ const Dashboard = () => {
 
                       <p>
                         ⏰ Match Time:
-                        <span className="ml-2 text-cyan-400 font-bold">
+                        <span className="ml-2 text-cyan-400 sm:text-[17px] text-[14px] font-bold">
                           {selectedTournament.match_time
                             ? new Date(selectedTournament.match_time).toLocaleString("en-IN", {
                                 timeZone: "Asia/Kolkata"
@@ -2491,11 +2734,23 @@ const Dashboard = () => {
                         MATCH RULES
                       </h3>
 
-                      <ul className="space-y-3 text-gray-300">
+                      <ul className="space-y-3 text-gray-300 ">
 
                         {selectedTournament.rules?.length > 0 ? (
                           selectedTournament.rules.map((rule, index) => (
-                            <li key={index}>✅ {rule}</li>
+                            <li className=" 
+                              flex items-start gap-2
+                              break-words
+                              text-sm sm:text-base
+                              leading-relaxed"
+                              key={index}><span className="text-green-400 mt-0.5">
+                                  ✅
+                                </span>
+
+                                <span>
+                                  {rule}
+                                </span>
+                            </li>
                           ))
                         ) : (
                           <li>No Rules Added</li>
@@ -2517,7 +2772,7 @@ const Dashboard = () => {
                     <div className="space-y-5">
 
                       {/* JOINED STATUS */}
-                      <div className="w-full mt-5 py-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-center text-green-400 font-black text-lg">
+                      <div className="w-full sm:mt-5 mt-3 py-2 sm:py-4 text-[20px] rounded-2xl bg-green-500/10 border border-green-500/20 text-center text-green-400 font-black sm:text-lg">
 
                         MATCH COMPLETED ✅
 
@@ -2527,7 +2782,7 @@ const Dashboard = () => {
 
                   ) : (
 
-                    <div className="w-full py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center text-red-400 font-black text-lg">
+                    <div className="w-full sm:py-4 py-2 rounded-2xl text-[20px] bg-red-500/10 border border-red-500/20 text-center text-red-400 font-black sm:text-lg">
 
                       MATCH OVER ❌
 
@@ -2537,7 +2792,7 @@ const Dashboard = () => {
 
                 ) : joined ? (
 
-                  <div className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-950 to-pink-950 border border-green-500/20 text-center text-cyan-400 font-black text-lg">
+                  <div className="w-full sm:py-4 py-2 rounded-2xl bg-gradient-to-r from-purple-950 to-pink-950 border border-green-500/20 text-center text-cyan-400 font-black text-lg">
 
                     JOINED ✅
 
@@ -2839,9 +3094,9 @@ const Dashboard = () => {
           {/* ADD CASH MODAL */}
           {showAddCashModal && (
 
-            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center sm:p-4 p-2">
 
-              <div className="scrollbar-hide overflow-y-auto w-full max-w-md rounded-3xl bg-gray-900 border border-green-500/20 p-8 max-h-[90vh] relative">
+              <div className="scrollbar-hide overflow-y-auto w-full max-w-md rounded-3xl bg-gray-900 border border-green-500/20 sm:p-8 p-3 max-h-[90vh] relative">
 
                 <button
                   onClick={() => {
@@ -2860,7 +3115,7 @@ const Dashboard = () => {
                   ×
                 </button>
 
-                <h2 className="text-3xl font-black text-green-400 mb-6">
+                <h2 className="sm:text-3xl text-2xl font-black text-green-400 mb-6">
 
                   ADD CASH
 
@@ -2934,7 +3189,7 @@ const Dashboard = () => {
                 {/* SHOW PAYMENT SECTION ONLY AFTER VALID AMOUNT */}
                 {showPaymentSection && amount && Number(amount) >= 20 && (
                   <>
-                    <div className="flex flex-col items-center mb-5">
+                    <div className="flex flex-col items-center mb-5 mt-3">
 
                       <div className="bg-white p-4 rounded-3xl">
 
@@ -3194,9 +3449,9 @@ const Dashboard = () => {
           {/* Show Transaction History */}
           {showWalletHistory && (
 
-            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center sm:p-4 p-2">
 
-              <div className=" scrollbar-hide w-full max-w-3xl rounded-[35px] bg-gray-900 border border-yellow-500/20 p-8 relative max-h-[90vh] overflow-y-auto">
+              <div className=" scrollbar-hide w-full max-w-3xl rounded-[35px] bg-gray-900 border border-yellow-500/20 sm:p-8 p-3 relative max-h-[90vh] overflow-y-auto">
 
                 {/* CLOSE */}
                 <button
@@ -3209,7 +3464,7 @@ const Dashboard = () => {
                 </button>
 
                 {/* TITLE */}
-                <h2 className="text-4xl font-black text-yellow-400 mb-8">
+                <h2 className="sm:text-4xl text-2xl font-black text-yellow-400 mb-8">
 
                   WALLET HISTORY
 
@@ -3322,8 +3577,8 @@ const Dashboard = () => {
           
         </section>
 
-        {/* Help section */}
-        <section className="px-6 pb-20">
+       {/* Help section */}
+        <section className="sm:px-6 sm:pb-20 px-3 pb-16">
 
           <div
             className="
@@ -3334,27 +3589,27 @@ const Dashboard = () => {
             border-yellow-500/10
             bg-white/5
             backdrop-blur-xl
-            p-7
-            
+            sm:p-10
+            p-5
             "
           >
 
-            <h2 className="text-4xl font-black text-yellow-400 mb-5">
+            <h2 className="sm:text-4xl text-2xl font-black text-yellow-400 sm:mb-5 mb-2">
 
               NEED HELP?
 
             </h2>
 
-            <p className="text-gray-300 text-lg leading-relaxed mb-8">
+            <p className="text-gray-300 sm:text-lg text-base leading-relaxed sm:mb-8 mb-4">
 
               Facing payment issues, room problems or tournament errors?
               Contact support anytime.
 
             </p>
 
-            <div className="flex flex-wrap gap-5">
+            <div className="flex flex-wrap sm:gap-5 gap-2">
 
-               <a
+              <a
 
                 href="https://instagram.com/ff.arena.tournaments"
 
@@ -3363,7 +3618,8 @@ const Dashboard = () => {
                 rel="noopener noreferrer"
 
                 className="
-                px-8 py-4
+                sm:px-8 py-4
+                px-6
                 rounded-2xl
                 bg-gradient-to-r
                 from-pink-500
@@ -3379,12 +3635,13 @@ const Dashboard = () => {
                 Instagram Support
 
               </a>
-
+              
             <a
               href="mailto:jk.tournaments99@gmail.com"
 
               className="
-              px-8 py-4
+              sm:px-8 py-4
+              px-6
               rounded-2xl
               border border-yellow-500/20
               bg-white/5

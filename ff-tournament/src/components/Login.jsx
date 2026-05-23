@@ -107,7 +107,7 @@ export default function Login() {
 
   return (
 
-    <div className="relative min-h-screen overflow-hidden bg-black text-white flex items-center justify-center px-4">
+    <div className="relative min-h-screen overflow-hidden bg-black text-white flex items-center justify-center  sm:px-4 p-4">
 
       {/* Animated Gaming Background */}
       <div
@@ -160,26 +160,26 @@ export default function Login() {
       {/* Login Card */}
       <form
         onSubmit={handleLogin}
-        className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-yellow-500/20 rounded-[35px] p-8 shadow-[0_0_80px_rgba(255,215,0,0.15)]"
+        className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-yellow-500/20 rounded-[35px] sm:p-8 p-4 shadow-[0_0_80px_rgba(255,215,0,0.15)]"
       >
 
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center sm:mb-6 mb-5">
 
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.5)] animate-pulse">
+          <div className="sm:w-24 sm:h-24 w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.5)] animate-pulse">
 
-            <Gamepad2 className="w-12 h-12 text-black" />
+            <Gamepad2 className="sm:w-12 sm:h-12 w-6 h-6 text-black" />
 
           </div>
 
         </div>
 
         {/* Title */}
-        <h1 className="text-5xl font-black text-center bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent mb-3 tracking-wide">
+        <h1 className="sm:text-5xl text-4xl font-black text-center bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent mb-3 tracking-wide">
           FF ARENA
         </h1>
 
-        <p className="text-center text-gray-400 mb-8 text-sm tracking-wide">
+        <p className="text-center text-gray-400 mb-8 sm:text-sm text-base tracking-wide">
           Enter the battlefield and dominate tournaments.
         </p>
 
@@ -224,7 +224,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="relative overflow-hidden group w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-4 rounded-2xl font-black text-lg tracking-wide hover:scale-105 transition-all duration-300 shadow-[0_0_35px_rgba(255,215,0,0.4)]"
+          className="relative overflow-hidden group w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-4 rounded-2xl font-black sm:text-lg text-base tracking-wide hover:scale-105 transition-all duration-300 shadow-[0_0_35px_rgba(255,215,0,0.4)]"
         >
 
           <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition duration-700" />

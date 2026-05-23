@@ -172,26 +172,28 @@ const CreateTournament = () => {
 
   return (
 
-    <div className="min-h-screen bg-black text-white p-8 flex justify-center">
-        <div className="w-full max-w-5xl">
+  <div className="min-h-screen bg-black text-white p-3 sm:p-6 lg:p-8 flex justify-center">
+
+    <div className="w-full max-w-5xl">
+
       {/* HEADER */}
-      <div className="flex items-center gap-4 mb-10">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 sm:mb-10">
 
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
 
-          <ShieldCheck className="text-black w-8 h-8" />
+          <ShieldCheck className="text-black w-7 h-7 sm:w-8 sm:h-8" />
 
         </div>
 
         <div>
 
-          <h1 className="text-5xl font-black text-yellow-400">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-yellow-400">
 
             CREATE TOURNAMENT
 
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
 
             Create new esports matches
 
@@ -202,12 +204,12 @@ const CreateTournament = () => {
       </div>
 
       {/* FORM */}
-      <div className="max-w-4xl rounded-[35px] border border-yellow-500/10 bg-white/5 backdrop-blur-xl p-8 space-y-6">
+      <div className="w-full rounded-[25px] sm:rounded-[35px] border border-yellow-500/10 bg-white/5 backdrop-blur-xl p-4 sm:p-8 space-y-5 sm:space-y-6">
 
         {/* TITLE */}
         <div>
 
-          <label className="block mb-3 text-yellow-400 font-bold">
+          <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
             Tournament Title
 
@@ -220,7 +222,16 @@ const CreateTournament = () => {
               setTitle(e.target.value)
             }
             placeholder="Solo Battle"
-            className="w-full rounded-2xl bg-black/40 border border-yellow-500/20 p-4 outline-none"
+            className="
+            w-full
+            rounded-2xl
+            bg-black/40
+            border
+            border-yellow-500/20
+            p-3 sm:p-4
+            outline-none
+            text-sm sm:text-base
+            "
           />
 
         </div>
@@ -228,7 +239,7 @@ const CreateTournament = () => {
         {/* GAME MODE */}
         <div>
 
-          <label className="block mb-3 text-yellow-400 font-bold">
+          <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
             Game Mode
 
@@ -239,7 +250,16 @@ const CreateTournament = () => {
             onChange={(e) =>
               setGameMode(e.target.value)
             }
-            className="w-full rounded-2xl bg-black/40 border border-yellow-500/20 p-4 outline-none"
+            className="
+            w-full
+            rounded-2xl
+            bg-black/40
+            border
+            border-yellow-500/20
+            p-3 sm:p-4
+            outline-none
+            text-sm sm:text-base
+            "
           >
 
             <option value="">
@@ -253,35 +273,34 @@ const CreateTournament = () => {
             <option>
               Clash Squad
             </option>
-              
+
             <option>
               Bomb Squad 5v5
-              </option>
-              
-              <option>
-                Lone Wolf
-              </option>
+            </option>
 
-              <option >
-                Solo
-              </option>
+            <option>
+              Lone Wolf
+            </option>
 
-              <option >
-                Duo
-              </option>
-              
+            <option>
+              Solo
+            </option>
+
+            <option>
+              Duo
+            </option>
 
           </select>
 
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
 
           {/* ENTRY */}
           <div>
 
-            <label className="block mb-3 text-yellow-400 font-bold">
+            <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
               Entry Fee
 
@@ -294,7 +313,16 @@ const CreateTournament = () => {
                 setEntryFee(e.target.value)
               }
               placeholder="50"
-              className="w-full rounded-2xl bg-black/40 border border-yellow-500/20 p-4 outline-none"
+              className="
+              w-full
+              rounded-2xl
+              bg-black/40
+              border
+              border-yellow-500/20
+              p-3 sm:p-4
+              outline-none
+              text-sm sm:text-base
+              "
             />
 
           </div>
@@ -302,7 +330,7 @@ const CreateTournament = () => {
           {/* PRIZE */}
           <div>
 
-            <label className="block mb-3 text-yellow-400 font-bold">
+            <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
               Prize Pool
 
@@ -315,7 +343,16 @@ const CreateTournament = () => {
                 setPrize(e.target.value)
               }
               placeholder="500"
-              className="w-full rounded-2xl bg-black/40 border border-yellow-500/20 p-4 outline-none"
+              className="
+              w-full
+              rounded-2xl
+              bg-black/40
+              border
+              border-yellow-500/20
+              p-3 sm:p-4
+              outline-none
+              text-sm sm:text-base
+              "
             />
 
           </div>
@@ -323,7 +360,7 @@ const CreateTournament = () => {
           {/* PLAYERS */}
           <div>
 
-            <label className="block mb-3 text-yellow-400 font-bold">
+            <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
               Players
 
@@ -336,7 +373,16 @@ const CreateTournament = () => {
                 setPlayers(e.target.value)
               }
               placeholder="48"
-              className="w-full rounded-2xl bg-black/40 border border-yellow-500/20 p-4 outline-none"
+              className="
+              w-full
+              rounded-2xl
+              bg-black/40
+              border
+              border-yellow-500/20
+              p-3 sm:p-4
+              outline-none
+              text-sm sm:text-base
+              "
             />
 
           </div>
@@ -346,7 +392,7 @@ const CreateTournament = () => {
         {/* MATCH TIME */}
         <div>
 
-          <label className="block mb-3 text-yellow-400 font-bold">
+          <label className="block mb-2 sm:mb-3 text-yellow-400 font-bold text-sm sm:text-base">
 
             Match Time
 
@@ -367,8 +413,9 @@ const CreateTournament = () => {
             bg-black/40
             border
             border-yellow-500/20
-            p-4
+            p-3 sm:p-4
             outline-none
+            text-sm sm:text-base
             "
           />
 
@@ -377,7 +424,7 @@ const CreateTournament = () => {
         {/* RULES */}
         <div>
 
-          <label className="block mb-4 text-yellow-400 font-bold">
+          <label className="block mb-4 text-yellow-400 font-bold text-sm sm:text-base">
 
             Tournament Rules
 
@@ -390,12 +437,12 @@ const CreateTournament = () => {
             bg-black/30
             border
             border-yellow-500/10
-            p-5
-            mb-6
+            p-3 sm:p-5
+            mb-5 sm:mb-6
             "
           >
 
-            <h3 className="text-lg font-black text-green-400 mb-4">
+            <h3 className="text-base sm:text-lg font-black text-green-400 mb-4">
 
               Default Rules (Auto Added)
 
@@ -415,9 +462,12 @@ const CreateTournament = () => {
                     text-gray-300
                     bg-white/5
                     rounded-xl
-                    px-4
-                    py-3
+                    px-3 sm:px-4
+                    py-2 sm:py-3
+                    text-sm sm:text-base
+                    break-words
                     "
+
                   >
 
                     ✅ {rule}
@@ -433,7 +483,7 @@ const CreateTournament = () => {
           </div>
 
           {/* CUSTOM RULES */}
-          <h3 className="text-lg font-black text-yellow-400 mb-4">
+          <h3 className="text-base sm:text-lg font-black text-yellow-400 mb-4">
 
             Extra Rules (Optional)
 
@@ -447,7 +497,7 @@ const CreateTournament = () => {
 
                 <div
                   key={index}
-                  className="flex gap-3"
+                  className="flex gap-2 sm:gap-3"
                 >
 
                   <input
@@ -470,8 +520,9 @@ const CreateTournament = () => {
                     bg-black/40
                     border
                     border-yellow-500/20
-                    p-4
+                    p-3 sm:p-4
                     outline-none
+                    text-sm sm:text-base
                     "
                   />
 
@@ -489,11 +540,12 @@ const CreateTournament = () => {
 
                     }}
                     className="
-                    px-5
+                    px-4 sm:px-5
                     rounded-2xl
                     bg-red-500
                     text-white
                     font-bold
+                    text-sm sm:text-base
                     "
                   >
 
@@ -520,12 +572,14 @@ const CreateTournament = () => {
             }
             className="
             mt-5
-            px-6
+            w-full sm:w-auto
+            px-5 sm:px-6
             py-3
             rounded-2xl
             bg-yellow-400
             text-black
             font-black
+            text-sm sm:text-base
             "
           >
 
@@ -535,46 +589,48 @@ const CreateTournament = () => {
 
         </div>
 
-          {/* BUTTON */}
-          <button
+        {/* BUTTON */}
+        <button
 
-            onClick={createTournament}
+          onClick={createTournament}
 
-            disabled={loading}
+          disabled={loading}
 
-            className="
-            w-full
-            py-5
-            rounded-2xl
-            bg-gradient-to-r
-            from-yellow-400
-            to-orange-500
-            text-black
-            font-black
-            text-xl
-            hover:scale-[1.02]
-            transition-all
-            duration-300
-            disabled:opacity-50
-            "
-          >
+          className="
+          w-full
+          py-4 sm:py-5
+          rounded-2xl
+          bg-gradient-to-r
+          from-yellow-400
+          to-orange-500
+          text-black
+          font-black
+          text-lg sm:text-xl
+          hover:scale-[1.02]
+          transition-all
+          duration-300
+          disabled:opacity-50
+          "
 
-            {
+        >
 
-              loading
-              ? "CREATING..."
-              : "CREATE TOURNAMENT"
+          {
 
-            }
+            loading
+            ? "CREATING..."
+            : "CREATE TOURNAMENT"
 
-          </button>
+          }
 
-          </div>
-        </div>
+        </button>
+
+      </div>
 
     </div>
 
-  );
+  </div>
+
+);
 
 };
 

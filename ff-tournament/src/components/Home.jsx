@@ -165,7 +165,7 @@ const Home = () => {
        <img
         src={airplane}
         alt="airdrop-plane"
-        className="w-80 rotate-3 opacity-90"
+        className="sm:w-80 w-60 rotate-3 opacity-90"
       />
 
       </div>
@@ -237,11 +237,11 @@ const Home = () => {
       <div className="relative z-10">
 
         {/* Navbar */}
-        <nav className="flex items-center justify-between px-6 py-5 border-b border-yellow-500/10 backdrop-blur-md bg-black/30 sticky top-0 z-50">
-
+        <nav className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 py-4 sm:py-5 gap-4 sm:gap-0 border-b border-yellow-500/10 backdrop-blur-md bg-black/30 sticky top-0 z-50">
+          
           <div className="flex items-center gap-3">
 
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
+            <div className="w-12 h-12  rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
               
               <img src={logo} className="text-black w-12 h-12" />
 
@@ -253,18 +253,18 @@ const Home = () => {
 
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4 flex-wrap justify-center">
 
             <button
               onClick={() => navigate("/login")}
-              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300 shadow-[0_0_25px_rgba(255,215,0,0.35)]"
+              className="px-4 sm:px-6 py-1  sm:py-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300 shadow-[0_0_25px_rgba(255,215,0,0.35)]"
             >
               LOGIN
             </button>
 
             <button
               onClick={() => navigate("/register")}
-              className="px-6 py-3 rounded-2xl border border-yellow-500/30 backdrop-blur-xl bg-white/5 hover:bg-yellow-500 hover:text-black transition-all duration-300 font-bold"
+              className="px-4 sm:px-6 py-1 sm:py-3 rounded-2xl border border-yellow-500/30 backdrop-blur-xl bg-white/5 hover:bg-yellow-500 hover:text-black transition-all duration-300 font-bold"
             >
               REGISTER
             </button>
@@ -274,7 +274,7 @@ const Home = () => {
         </nav>
 
         {/* Hero Section */}
-        <section className="px-6 py-24 text-center max-w-7xl mx-auto">
+        <section className="px-4 sm:px-6 py-16 sm:py-24 text-center max-w-7xl mx-auto">
 
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 mb-8">
 
@@ -286,20 +286,20 @@ const Home = () => {
 
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-black leading-tight mb-8 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-8xl font-black leading-tight mb-8 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
             DOMINATE
             <br />
             THE BATTLEFIELD
           </h1>
 
-          <p className="text-gray-300 max-w-3xl mx-auto text-xl leading-relaxed mb-10">
+          <p className="text-gray-300 max-w-3xl mx-auto sm:text-lg text-base leading-relaxed mb-10">
             Join intense Free Fire tournaments, compete against pro players,
             earn real cash rewards, and climb the leaderboard.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5">
 
-            <button className="group relative overflow-hidden px-10 py-5 rounded-3xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black text-xl hover:scale-105 transition-all duration-300 shadow-[0_0_45px_rgba(255,215,0,0.45)]">
+            <button className="group relative overflow-hidden sm:px-10 sm:py-5 px-7 py-4 rounded-3xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black sm:text-lg text-base hover:scale-105 transition-all duration-300 shadow-[0_0_45px_rgba(255,215,0,0.45)]">
 
               <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition duration-700" />
 
@@ -309,7 +309,7 @@ const Home = () => {
 
             </button>
 
-            <button className="px-10 py-5 rounded-3xl border border-yellow-500/30 bg-white/5 backdrop-blur-xl font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-300">
+            <button className="sm:px-10 sm:py-5 px-7 py-4 rounded-3xl border border-yellow-500/30 bg-white/5 backdrop-blur-xl font-bold sm:text-lg text-base hover:bg-yellow-500 hover:text-black transition-all duration-300">
               WATCH LIVE MATCHES
             </button>
 
@@ -318,7 +318,7 @@ const Home = () => {
         </section>
 
         {/* Wallet Banner */}
-        <section className="px-6 mb-20">
+        <section className="sm:px-6 sm:mb-20 px-4 mb-16">
 
           <div className="max-w-7xl mx-auto rounded-[40px] border border-yellow-500/20 backdrop-blur-xl bg-white/5 p-10 shadow-[0_0_60px_rgba(255,215,0,0.12)] flex flex-col lg:flex-row items-center justify-between gap-8">
 
@@ -326,31 +326,31 @@ const Home = () => {
 
               <div className="flex items-center gap-4 mb-5">
 
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                <div className="sm:w-16 sm:h-16 w-10 h-10 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
 
-                  <Wallet className="text-black w-8 h-8" />
+                  <Wallet className="text-black sm:w-8 sm:h-8 w-6 h-6" />
 
                 </div>
 
-                <h2 className="text-4xl font-black text-yellow-400">
+                <h2 className="sm:text-4xl text-2xl font-black text-yellow-400">
                   Fast UPI Wallet
                 </h2>
 
               </div>
 
-              <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+              <p className="text-gray-300 sm:text-lg text-base max-w-2xl leading-relaxed">
                 Deposit instantly using UPI QR and withdraw your winnings directly to your bank account within minutes.
               </p>
 
             </div>
 
-            <div className="flex gap-5 flex-wrap">
+            <div className="flex sm:gap-5 gap-2 sm:flex-wrap">
 
-              <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300">
+              <button className="sm:px-8 sm:py-4 px-4 py-2 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-black hover:scale-105 transition-all duration-300">
                 DEPOSIT
               </button>
 
-              <button className="px-8 py-4 rounded-2xl border border-yellow-500/30 bg-white/5 font-bold hover:bg-yellow-500 hover:text-black transition-all duration-300">
+              <button className="sm:px-8 sm:py-4 px-4 py-2 rounded-2xl border border-yellow-500/30 bg-white/5 font-bold hover:bg-yellow-500 hover:text-black transition-all duration-300">
                 WITHDRAW
               </button>
 
@@ -359,7 +359,8 @@ const Home = () => {
           </div>
 
         </section>
-        <section className="px-6 mb-16">
+
+        <section className="sm:px-6 sm:mb-16 px-4 mb-12">
 
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -371,7 +372,7 @@ const Home = () => {
 
               </h2>
 
-              <h1 className="text-5xl font-black text-yellow-400">
+              <h1 className="sm:text-5xl text-3xl font-black text-yellow-400">
 
                 {tournaments.length}
 
@@ -379,7 +380,7 @@ const Home = () => {
 
             </div>
 
-            <div className="rounded-3xl bg-white/5 border border-green-500/10 p-6">
+            <div className="rounded-3xl  bg-white/5 border border-green-500/10 p-6">
 
               <h2 className="text-gray-400 mb-2">
 
@@ -387,7 +388,7 @@ const Home = () => {
 
               </h2>
 
-              <h1 className="text-5xl font-black text-green-400">
+              <h1 className="sm:text-5xl text-3xl font-black text-green-400">
 
                 {
                   tournaments.filter(
@@ -407,7 +408,7 @@ const Home = () => {
 
               </h2>
 
-              <h1 className="text-5xl font-black text-red-400">
+              <h1 className="sm:text-5xl text-3xl font-black text-red-400">
 
                 {
                   tournaments.reduce(
@@ -424,7 +425,7 @@ const Home = () => {
 
         </section>
         {/* Tournament Section */}
-        <section className="px-6 pb-24">
+        <section className="sm:px-6 sm:pb-24 px-4 pb-20">
 
           <div className="max-w-7xl mx-auto">
 
@@ -432,11 +433,11 @@ const Home = () => {
 
               <div>
 
-                <h2 className="text-5xl font-black text-yellow-400 mb-3">
+                <h2 className="sm:text-5xl text-3xl font-black text-yellow-400 mb-3">
                   LIVE TOURNAMENTS
                 </h2>
 
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 sm:text-lg text-base">
                   Join battles and win real cash rewards.
                 </p>
 
@@ -461,16 +462,19 @@ const Home = () => {
               
 
             </div>
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex sm:gap-3 gap-2 flex-wrap ">
 
               <button
                 onClick={() => setSearch("")}
                 className="
-                px-5 py-2
+                sm:px-5 sm:py-2
+                px-3 py-2
                 rounded-xl
                 bg-yellow-500/20
                 text-yellow-400
                 font-bold
+                sm:text-[18px]
+                text-[14px]
                 "
               >
                 ALL
@@ -479,10 +483,13 @@ const Home = () => {
               <button
                 onClick={() => setSearch("Solo")}
                 className="
-                px-5 py-2
+                sm:px-5 sm:py-2
+                px-3 py-2
                 rounded-xl
                 bg-white/5
-                hover:bg-yellow-500/20
+                hover:bg-yellow-500/20 
+                sm:text-[18px]
+                text-[14px]
                 "
               >
                 SOLO
@@ -491,22 +498,28 @@ const Home = () => {
               <button
                 onClick={() => setSearch("Clash")}
                 className="
-                px-5 py-2
+                sm:px-5 sm:py-2
+                px-3 py-2
                 rounded-xl
                 bg-white/5
                 hover:bg-yellow-500/20
+                sm:text-[18px]
+                text-[14px]
                 "
               >
-                CLASH SQUAD
+                C S
               </button>
 
               <button
                 onClick={() => setSearch("Lone")}
                 className="
-                px-5 py-2
+                sm:px-5 sm:py-2
+                px-3 py-2
                 rounded-xl
                 bg-white/5
                 hover:bg-yellow-500/20
+                sm:text-[18px]
+                text-[14px]
                 "
               >
                 LONE WOLF
@@ -515,7 +528,7 @@ const Home = () => {
             </div>
 
             {/* Cards */}
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-8">
 
               {filteredTournaments.map((tournament, index) => {
 
@@ -534,29 +547,29 @@ const Home = () => {
                     {/* Header */}
                     <div className="relative z-10 flex items-center justify-between mb-7">
 
-                      <h3 className="text-3xl font-black text-yellow-400">
-                        {tournament.title}
+                      <h3 className="sm:text-3xl text-[20px] font-black text-yellow-400">
+                        {tournament.title}dnksssw
                       </h3>
                       
                       
                       <span className=" ">                      
                         {/* COUNTDOWN */}
                         {status === "UPCOMING" && (
-                          <p className="bg-yellow-500/20 text-yellow-400 px-4 py-1 rounded-full text-sm font-bold">
+                          <p className="bg-yellow-500/20 text-yellow-400 sm:px-4 py-1 rounded-full text-sm font-bold">
                             {getCountdown(tournament.match_time)}
                           </p>
                         )}
 
                         {/* LIVE indicator */}
                         {status === "LIVE" && (
-                          <p className="text-green-400 animate-pulse px-4 py-1 rounded-full text-sm font-bold">
+                          <p className="text-green-400 animate-pulse sm:px-4 py-1 rounded-full text-sm font-bold">
                             🔴 LIVE NOW
                           </p>
                         )}
 
                         {/* COMPLETED */}
                         {status === "COMPLETED" && (
-                          <p className="text-red-400 px-4 py-1 rounded-full text-sm font-bold">
+                          <p className="text-red-400 sm:px-4 sm:py-1 rounded-full text-sm font-bold">
                             Match Ended
                           </p>
                         )}
@@ -567,7 +580,7 @@ const Home = () => {
                     </div>
 
                     {/* Tournament Info */}
-                    <div className="relative z-10 space-y-4 text-gray-300 mb-8 text-lg">
+                    <div className="relative z-10 space-y-4 text-gray-300 mb-8 sm:text-lg">
 
                       <p>
                         🎟 Entry Fee:
@@ -693,7 +706,7 @@ const Home = () => {
         </section>
         
         {/* Help section */}
-        <section className="px-6 pb-20">
+        <section className="sm:px-6 sm:pb-20 px-4 pb-16">
 
           <div
             className="
@@ -708,13 +721,13 @@ const Home = () => {
             "
           >
 
-            <h2 className="text-4xl font-black text-yellow-400 mb-5">
+            <h2 className="sm:text-4xl text-2xl font-black text-yellow-400 mb-5">
 
               NEED HELP?
 
             </h2>
 
-            <p className="text-gray-300 text-lg leading-relaxed mb-8">
+            <p className="text-gray-300 sm:text-lg text-base leading-relaxed mb-8">
 
               Facing payment issues, room problems or tournament errors?
               Contact support anytime.
@@ -732,7 +745,8 @@ const Home = () => {
                 rel="noopener noreferrer"
 
                 className="
-                px-8 py-4
+                sm:px-8 py-4
+                px-6
                 rounded-2xl
                 bg-gradient-to-r
                 from-pink-500
@@ -753,7 +767,8 @@ const Home = () => {
               href="mailto:jk.tournaments99@gmail.com"
 
               className="
-              px-8 py-4
+              sm:px-8 py-4
+              px-6
               rounded-2xl
               border border-yellow-500/20
               bg-white/5
