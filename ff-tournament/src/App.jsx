@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
+requestNotificationPermission
+} from "./firebase";
+import {
   BrowserRouter,
   Routes,
   Route
@@ -28,6 +31,53 @@ import Transactions from "./Admin/Pages/Transactions";
 import AdminUsers from "./Admin/Pages/AdminUsers";
 
 const App = () => {
+
+  useEffect(() => {
+
+const setupFCM = async () => {
+
+  const token = localStorage.getItem("token");
+
+  if (!token) return;
+
+  const fcmToken = await requestNotificationPermission();
+
+  if (!fcmToken) return;
+
+  await fetch(
+
+    `${import.meta.env.VITE_API_URL}/save-fcm-token`,
+
+    {
+
+      method: "POST",
+
+      headers: {
+
+        "Content-Type": "application/json",
+
+        Authorization: `Bearer ${token}`
+
+      },
+
+      body: JSON.stringify({
+
+        fcm_token: fcmToken
+
+      })
+
+    }
+
+  );
+
+
+  };
+
+  setupFCM();
+
+  }, []);
+
+
   useEffect(() => {
 
     const disableRightClick = (e) => {

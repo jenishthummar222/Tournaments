@@ -51,6 +51,7 @@ const CreateTournament = () => {
     "Use Correct IGN"
 
   ];
+ 
 
   // CREATE TOURNAMENT
   const createTournament = async () => {

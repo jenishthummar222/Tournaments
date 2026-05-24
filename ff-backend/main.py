@@ -10,6 +10,16 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from dateutil.parser import isoparse
 
+import firebase_admin
+
+from firebase_admin import credentials, messaging
+
+cred = credentials.Certificate(
+"firebase-adminsdk.json"
+)
+firebase_admin.initialize_app(cred)
+
+
 from dateutil import parser
 
 from auth.auth import (
@@ -251,18 +261,6 @@ def auto_update_tournaments():
                 # CONVERT FOR PRINT ONLY
                 match_ist = start_time.astimezone(ist)
 
-                print("MINUTES LEFT:", diff)
-
-                print(
-                    "NOW IST:",
-                    now_utc.astimezone(ist)
-                )
-
-                print(
-                    "MATCH IST:",
-                    match_ist
-                )
-
                 # STATUS
                 if tournament.get(
                     "result_uploaded",
@@ -282,8 +280,6 @@ def auto_update_tournaments():
                 else:
 
                     status = "completed"
-
-                print("Status :-", status)
 
                 db.tournaments.update_one(
 
@@ -411,6 +407,233 @@ def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(securi
 
         )
 
+
+#############################
+
+# SAVE USER FCM TOKEN
+
+#############################
+
+@app.post("/save-fcm-token")
+def save_fcm_token(
+
+
+data: dict,
+
+user_auth = Depends(verify_user)
+
+
+):
+    token = data.get("fcm_token")
+
+    if not token:
+
+        return {
+
+            "error": "FCM token required"
+
+        }
+
+    db.users.update_one(
+
+        {
+
+            "email": user_auth["email"]
+
+        },
+
+        {
+
+            "$set": {
+
+                "fcm_token": token
+
+            }
+
+        }
+
+    )
+
+    return {
+
+        "message": "Token saved"
+
+    }
+
+
+#############################
+
+# SEND NOTIFICATION TO ALL
+
+#############################
+
+def send_notification_to_all(title,body):
+
+    try:
+
+        users = list(
+
+            db.users.find(
+
+                {
+
+                    "fcm_token": {
+
+                        "$exists": True,
+
+                        "$ne": ""
+
+                    }
+
+                },
+
+                {
+
+                    "fcm_token": 1
+
+                }
+
+            )
+
+        )
+
+        tokens = [
+
+            user["fcm_token"]
+
+            for user in users
+
+            if user.get("fcm_token")
+
+        ]
+
+        if not tokens:
+
+            print("No FCM tokens found")
+
+            return
+
+        message = messaging.MulticastMessage(
+
+            notification=messaging.Notification(
+
+                title=title,
+
+                body=body
+
+            ),
+
+            tokens=tokens
+
+        )
+
+        response = messaging.send_each_for_multicast(
+
+            message
+
+        )
+
+        print(
+
+            f"Success: {response.success_count}"
+
+        )
+
+        print(
+
+            f"Failed: {response.failure_count}"
+
+        )
+
+        # REMOVE INVALID TOKENS
+        for index, resp in enumerate(response.responses):
+
+            if not resp.success:
+
+                error = str(resp.exception)
+
+                print("FCM ERROR:", error)
+
+                if (
+
+                    "registration-token-not-registered"
+
+                    in error
+
+                ):
+
+                    bad_token = tokens[index]
+
+                    db.users.update_many(
+
+                        {
+
+                            "fcm_token": bad_token
+
+                        },
+
+                        {
+
+                            "$unset": {
+
+                                "fcm_token": ""
+
+                            }
+
+                        }
+
+                    )
+
+    except Exception as e:
+
+        print("NOTIFICATION ERROR:", e)
+
+
+#############################
+
+# SEND NOTIFICATION TO Admin
+
+#############################
+
+def send_admin_notification(title,body):
+
+    try:
+
+        admin = db.users.find_one({
+
+            "role": "admin"
+
+        })
+
+        if not admin:
+
+            return
+
+        token = admin.get("fcm_token")
+
+        if not token:
+
+            return
+
+        message = messaging.Message(
+
+            notification=messaging.Notification(
+
+                title=title,
+
+                body=body
+
+            ),
+
+            token=token
+
+        )
+
+        messaging.send(message)
+
+    except Exception as e:
+
+        print("ADMIN NOTIFICATION ERROR:", e)
 
 
 # Update Profile Pic
@@ -2105,6 +2328,7 @@ def get_single_tournament(tournament_id: str):
 
             })
 
+
     tournament["joined_players_list"] = joined_players_list
 
     tournament["joined_players"] = len(
@@ -2131,7 +2355,6 @@ def add_tournament(
 
     match_time = parser.parse(raw_time)
 
-    print("Raw Time :- ",raw_time)
 
     # IST timezone
     ist = timezone(
@@ -2197,11 +2420,36 @@ def add_tournament(
         tournament
 
     )
+
+    send_notification_to_all(
+
+    "🔥 New Tournament Live",
+
+    f"{tournament['title']} | Prize ₹{tournament['prize']}"
+
+    )
     
     return {
 
         "message":
         "Tournament Added Successfully"
+
+    }
+
+@app.get("/test-notification")
+def test_notification():
+
+    send_notification_to_all(
+
+        "🔥 Test Notification",
+
+        "Firebase working successfully"
+
+    )
+
+    return {
+
+        "message": "sent"
 
     }
 
@@ -3001,6 +3249,16 @@ async def add_cash(
 
         })
 
+        send_admin_notification(
+
+        "💰 New Add Cash Request",
+
+        f"{email} requested ₹{amount}"
+
+
+        )
+
+
         return {
 
             "message":
@@ -3541,6 +3799,17 @@ async def withdraw_request(
         + timedelta(days=30)
 
     })
+
+    send_admin_notification(
+
+
+    "🏦 New Withdraw Request",
+
+    f"{email} requested ₹{amount}"
+
+
+    )
+
 
     return {
 

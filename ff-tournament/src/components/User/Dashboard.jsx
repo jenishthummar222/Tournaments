@@ -93,7 +93,8 @@ const Dashboard = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState("wallet");
+  const [activeTab, setActiveTab] = useState("wallet");
+  
    
   // Update Name
   const updateName = async () => {

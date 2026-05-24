@@ -21,7 +21,6 @@ export const successToast = (message, options = {}) => {
 // Error Toast
 export const errorToast = (message, options = {}) => {
 
-
     toast.error(message, {
         duration: options.duration || 5000,
         style: {
