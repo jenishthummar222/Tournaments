@@ -14,10 +14,24 @@ import firebase_admin
 
 from firebase_admin import credentials, messaging
 
-cred = credentials.Certificate(
-"firebase-adminsdk.json"
+import json
+
+import os
+
+firebase_credentials = json.loads(
+
+    os.getenv("FIREBASE_CREDENTIALS")
+
 )
+
+cred = credentials.Certificate(
+
+    firebase_credentials
+
+)
+
 firebase_admin.initialize_app(cred)
+
 
 
 from dateutil import parser
