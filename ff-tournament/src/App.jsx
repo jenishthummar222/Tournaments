@@ -14,6 +14,7 @@ import Home from "./components/Home"
 import Login from "./components/Login"
 import Register from "./components/Register";
 import Dashboard from "./components/User/Dashboard"
+import NotificationPermission from "./components/NotificationPermission";
 
 import AdminProtected from "./components/Protected Routes/AdminProtectedRoute";
 import ProtectedRoute from "./components/Protected Routes/ProtectedRoute";
@@ -30,55 +31,10 @@ import WithdrawRequests from "./Admin/Pages/WithdrawRequests";
 import Transactions from "./Admin/Pages/Transactions";
 import AdminUsers from "./Admin/Pages/AdminUsers";
 
+
 const App = () => {
 
-  useEffect(() => {
-
-const setupFCM = async () => {
-
-  const token = localStorage.getItem("token");
-
-  if (!token) return;
-
-  const fcmToken = await requestNotificationPermission();
-
-  if (!fcmToken) return;
-
-  await fetch(
-
-    `${import.meta.env.VITE_API_URL}/save-fcm-token`,
-
-    {
-
-      method: "POST",
-
-      headers: {
-
-        "Content-Type": "application/json",
-
-        Authorization: `Bearer ${token}`
-
-      },
-
-      body: JSON.stringify({
-
-        fcm_token: fcmToken
-
-      })
-
-    }
-
-  );
-
-
-  };
-
-  setupFCM();
-
-  }, []);
-
-
-  useEffect(() => {
+ useEffect(() => {
 
     const disableRightClick = (e) => {
 
@@ -157,6 +113,9 @@ const setupFCM = async () => {
   return (
     
     <BrowserRouter>
+    
+        {/* NOTIFICATION POPUP */}
+        <NotificationPermission />
       
       <Routes>
 
