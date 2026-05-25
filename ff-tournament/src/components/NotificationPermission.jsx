@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import {
   requestNotificationPermission
-} from "./firebase";
+} from "../firebase";
 
 const NotificationPermission = () => {
 
