@@ -115,7 +115,7 @@ const App = () => {
     <BrowserRouter>
     
         {/* NOTIFICATION POPUP */}
-      {/*<NotificationPermission />*/}
+      <NotificationPermission />
       
       <Routes>
 

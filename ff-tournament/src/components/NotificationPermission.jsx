@@ -13,10 +13,16 @@ const NotificationPermission = () => {
   // =========================
   useEffect(() => {
 
+    const isInstagram =
+      navigator.userAgent.includes("Instagram");
+
+    if (isInstagram) return;
+
+    if (!("Notification" in window)) return;
+
     const notificationStatus =
       Notification.permission;
 
-    // SHOW ONLY IF NOT DECIDED
     if (notificationStatus === "default") {
 
       setShowPopup(true);
